@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
 interface TimelineEvent {
   year: number;
   title: string;
   description: string;
   image?: string;
+  details?: string;
 }
 
 const timelineEvents: TimelineEvent[] = [
@@ -15,42 +16,68 @@ const timelineEvents: TimelineEvent[] = [
     year: 1918,
     title: "First Enigma Machine",
     description: "Arthur Scherbius patents the first Enigma machine, originally designed for commercial use.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    details: "The first Enigma machine was developed by Arthur Scherbius, a German engineer. Initially, it was marketed as a commercial encryption device for businesses to protect their communications."
   },
   {
     year: 1923,
     title: "Commercial Enigma",
     description: "The first commercial Enigma machine is produced by Scherbius & Ritter.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    details: "The commercial version of the Enigma machine was produced by Scherbius & Ritter. It featured a keyboard and lampboard, making it easier to use than previous encryption devices."
   },
   {
     year: 1932,
     title: "Polish Breakthrough",
     description: "Polish mathematicians Marian Rejewski, Jerzy Różycki, and Henryk Zygalski begin breaking Enigma codes.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    details: "The Polish Cipher Bureau, led by Marian Rejewski, made the first breakthrough in breaking Enigma codes. They developed the 'bomba' machine, a forerunner to the British Bombe."
   },
   {
     year: 1939,
     title: "Bletchley Park Setup",
     description: "The British Government Code and Cypher School moves to Bletchley Park.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Bletchley_Park_Mansion.jpg/800px-Bletchley_Park_Mansion.jpg",
+    details: "Bletchley Park became the central site for British codebreakers during World War II. The estate was chosen for its location between Oxford and Cambridge universities."
   },
   {
     year: 1940,
     title: "Turing's Bombe",
     description: "Alan Turing and Gordon Welchman develop the Bombe machine to break Enigma codes.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Bombe_rebuild_at_Bletchley_Park.jpg/800px-Bombe_rebuild_at_Bletchley_Park.jpg",
+    details: "Alan Turing and Gordon Welchman developed the Bombe machine, which could find the daily settings of the Enigma machines. This was a crucial breakthrough in breaking German communications."
   },
   {
     year: 1941,
     title: "Naval Enigma Broken",
     description: "The British successfully break the Naval Enigma code, a major breakthrough in the war.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    details: "Breaking the Naval Enigma was particularly challenging as it used more complex settings. This breakthrough helped the Allies track German U-boat movements."
   },
   {
     year: 1945,
     title: "War End and Legacy",
     description: "The war ends, and the work at Bletchley Park remains classified for decades.",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Bletchley_Park_Mansion.jpg/800px-Bletchley_Park_Mansion.jpg",
+    details: "After the war, the work at Bletchley Park remained classified for decades. The contributions of the codebreakers, including Alan Turing, were not fully recognized until much later."
   },
 ];
 
 export const Timeline: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+
+  // Calculate spacing based on zoom level
+  const getSpacing = () => {
+    return 16 * zoomLevel;
+  };
+
+  // Calculate font size based on zoom level
+  const getFontSize = (baseSize: number) => {
+    return `${baseSize * zoomLevel}px`;
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
@@ -65,54 +92,102 @@ export const Timeline: React.FC = () => {
 
         {/* Timeline Controls */}
         <div className="flex justify-center gap-4 mb-8">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setZoomLevel(prev => Math.max(0.5, prev - 0.1))}
             className="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700"
           >
             Zoom Out
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setZoomLevel(prev => Math.min(2, prev + 0.1))}
             className="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700"
           >
             Zoom In
-          </button>
+          </motion.button>
         </div>
 
         {/* Timeline */}
         <div className="relative">
           {/* Vertical Line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-yellow-400 transform -translate-x-1/2" />
+          <motion.div 
+            className="absolute left-1/2 top-0 bottom-0 w-1 bg-yellow-400 transform -translate-x-1/2"
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          />
 
           {/* Events */}
-          <div className="space-y-16">
+          <div style={{ gap: getSpacing() }} className="flex flex-col">
             {timelineEvents.map((event, index) => (
               <motion.div
                 key={event.year}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.2 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "0px 0px -200px 0px" }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
                 className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
+                style={{ marginBottom: getSpacing() }}
               >
                 {/* Year Marker */}
                 <div className="w-1/2 flex justify-center">
                   <motion.div
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.2, rotate: 5 }}
                     className="relative"
                   >
-                    <div className="text-2xl font-bold text-yellow-400">{event.year}</div>
+                    <div 
+                      className="font-bold text-yellow-400"
+                      style={{ fontSize: getFontSize(24) }}
+                    >
+                      {event.year}
+                    </div>
                   </motion.div>
                 </div>
 
                 {/* Event Card */}
                 <div className="w-1/2">
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gray-800 p-6 rounded-lg cursor-pointer"
+                    whileHover={{ 
+                      scale: 1.05,
+                      boxShadow: "0 0 20px rgba(234, 179, 8, 0.3)"
+                    }}
+                    className="bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden"
                     onClick={() => setSelectedEvent(event)}
+                    style={{ transform: `scale(${zoomLevel})` }}
                   >
-                    <h3 className="text-xl font-bold mb-2">{event.title}</h3>
-                    <p className="text-gray-400">{event.description}</p>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <h3 
+                        className="font-bold mb-2"
+                        style={{ fontSize: getFontSize(20) }}
+                      >
+                        {event.title}
+                      </h3>
+                      <p 
+                        className="text-gray-400"
+                        style={{ fontSize: getFontSize(16) }}
+                      >
+                        {event.description}
+                      </p>
+                      {event.image && (
+                        <motion.img
+                          src={event.image}
+                          alt={event.title}
+                          className="w-full h-32 object-cover rounded-lg mt-4"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      )}
+                    </motion.div>
                   </motion.div>
                 </div>
               </motion.div>
@@ -127,7 +202,7 @@ export const Timeline: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
               onClick={() => setSelectedEvent(null)}
             >
               <motion.div
@@ -137,21 +212,50 @@ export const Timeline: React.FC = () => {
                 className="bg-gray-800 p-8 rounded-lg max-w-2xl w-full"
                 onClick={e => e.stopPropagation()}
               >
-                <h2 className="text-3xl font-bold mb-4">{selectedEvent.title}</h2>
-                <p className="text-gray-400 mb-4">{selectedEvent.description}</p>
-                {selectedEvent.image && (
-                  <img
-                    src={selectedEvent.image}
-                    alt={selectedEvent.title}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                  />
-                )}
-                <button
-                  onClick={() => setSelectedEvent(null)}
-                  className="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-300"
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
                 >
-                  Close
-                </button>
+                  <h2 
+                    className="font-bold mb-4"
+                    style={{ fontSize: getFontSize(24) }}
+                  >
+                    {selectedEvent.title}
+                  </h2>
+                  <p 
+                    className="text-gray-400 mb-4"
+                    style={{ fontSize: getFontSize(16) }}
+                  >
+                    {selectedEvent.description}
+                  </p>
+                  {selectedEvent.details && (
+                    <p 
+                      className="text-gray-300 mb-4"
+                      style={{ fontSize: getFontSize(16) }}
+                    >
+                      {selectedEvent.details}
+                    </p>
+                  )}
+                  {selectedEvent.image && (
+                    <motion.img
+                      src={selectedEvent.image}
+                      alt={selectedEvent.title}
+                      className="w-full h-48 object-cover rounded-lg mb-4"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 }}
+                    />
+                  )}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setSelectedEvent(null)}
+                    className="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-300"
+                  >
+                    Close
+                  </motion.button>
+                </motion.div>
               </motion.div>
             </motion.div>
           )}

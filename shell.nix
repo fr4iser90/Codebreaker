@@ -212,8 +212,10 @@ pkgs.mkShell {
     }
 
     rebuild-frontend() {
+      echo "Killing frontend"
+      kill-frontend-port
       echo "Removing node_modules, package-lock.json, and .next in the frontend..."
-      cd frontend
+      cd frontend # Corrected path
       rm -rf node_modules package-lock.json .next
       echo "Cleaning npm cache..."
       npm cache clean --force
@@ -222,6 +224,62 @@ pkgs.mkShell {
       cd -
       echo "Frontend dependencies have been completely reinstalled!"
       start-frontend-dev
+    }
+    
+    kill-frontend-port() {
+      local port=$(get-frontend-port); echo "Checking for processes using frontend port $port..."
+      kill_port_process "$port"
+      if is_port_in_use "$port"; then
+        echo "Port still in use, checking for Next.js processes..."; local next_pids=$(ps aux | grep -i "next dev" | grep -v grep | awk '{print $2}')
+        if [ -n "$next_pids" ]; then echo "Found Next.js processes: $next_pids"; for pid in $next_pids; do kill "$pid" 2>/dev/null; done; sleep 1; fi
+      fi
+      if is_port_in_use "$port"; then echo "Still in use, trying force kill..."; kill_port_process "$port" "force"; fi
+    }
+
+    # --- Improved Port Management Functions (largely unchanged, ensure get-frontend-port is accurate) ---
+    detect_port_process() {
+      local port=$1
+      local pids=""
+      if command -v lsof &>/dev/null; then
+        pids=$(lsof -t -i ":$port" 2>/dev/null | while read pid; do if ! ps -p "$pid" -o comm= | grep -q "firefox"; then echo "$pid"; fi; done)
+      fi
+      if [ -z "$pids" ] && command -v netstat &>/dev/null; then
+        pids=$(netstat -tulpn 2>/dev/null | grep ":$port " | awk '{print $7}' | cut -d'/' -f1 | grep -v "-" | sort -u | while read pid; do if ! ps -p "$pid" -o comm= | grep -q "firefox"; then echo "$pid"; fi; done)
+      fi
+      if [ -z "$pids" ] && command -v ss &>/dev/null; then
+        pids=$(ss -tulpn 2>/dev/null | grep ":$port " | awk '{print $7}' | cut -d',' -f2 | cut -d'=' -f2 | grep -v "-" | sort -u | while read pid; do if ! ps -p "$pid" -o comm= | grep -q "firefox"; then echo "$pid"; fi; done)
+      fi
+      if [ -z "$pids" ] && command -v fuser &>/dev/null; then
+        pids=$(fuser -n tcp "$port" 2>/dev/null | awk '{for(i=1;i<=NF;i++) if($i+0>0) print $i}' | while read pid; do if ! ps -p "$pid" -o comm= | grep -q "firefox"; then echo "$pid"; fi; done)
+      fi
+      echo "$pids"
+    }
+
+    is_port_in_use() {
+      local port=$1
+      if command -v lsof &>/dev/null && lsof -i ":$port" &>/dev/null; then return 0; fi
+      if command -v netstat &>/dev/null && netstat -tuln 2>/dev/null | grep -q ":$port "; then return 0; fi
+      if command -v ss &>/dev/null && ss -tuln 2>/dev/null | grep -q ":$port "; then return 0; fi
+      if command -v fuser &>/dev/null && fuser -n tcp "$port" 2>/dev/null | grep -q "$port"; then return 0; fi
+      if command -v nc &>/dev/null; then nc -z localhost "$port" &>/dev/null && return 0; 
+      elif command -v timeout &>/dev/null; then timeout 1 bash -c "</dev/tcp/localhost/$port" &>/dev/null && return 0; fi
+      return 1
+    }
+
+    kill_port_process() {
+      local port=$1; local force=$2; local pids=$(detect_port_process "$port"); local killed=false
+      if [ -n "$pids" ]; then
+        echo "Found process(es) on port $port (excluding Firefox): $pids"
+        if [ "$force" != "force" ]; then
+          echo "Attempting graceful termination..."; for pid in $pids; do if ! ps -p "$pid" -o comm= | grep -q "firefox"; then kill "$pid" 2>/dev/null; killed=true; fi; done; sleep 1
+        fi
+        if [ "$force" = "force" ] || is_port_in_use "$port"; then
+          echo "Using force termination (kill -9)..."; for pid in $pids; do if ! ps -p "$pid" -o comm= | grep -q "firefox"; then kill -9 "$pid" 2>/dev/null; killed=true; fi; done; sleep 1
+        fi
+        if is_port_in_use "$port"; then echo "WARNING: Port $port is still in use after kill attempts!"; return 1; else echo "Successfully freed port $port"; return 0; fi
+      else
+        echo "No process found using port $port (excluding Firefox)"; if is_port_in_use "$port"; then echo "WARNING: Port $port appears to be in use, but couldn't identify the process"; return 1; fi; return 0
+      fi
     }
 
     get-frontend-port() {
