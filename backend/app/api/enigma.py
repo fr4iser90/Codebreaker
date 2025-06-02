@@ -54,9 +54,11 @@ async def set_settings(settings: MachineSettings):
         if not machine.set_reflector(settings.reflector):
             raise HTTPException(status_code=400, detail="Invalid reflector")
 
-        # Set up plugboard
+        # Clear existing plugboard connections and set up new ones
+        machine.plugboard = Plugboard() # Create a new, empty plugboard
         for char1, char2 in settings.plugboard.items():
             if not machine.add_plugboard_connection(char1, char2):
+                # This exception should now be raised if add_connection returns False
                 raise HTTPException(status_code=400, detail=f"Invalid plugboard connection: {char1}-{char2}")
 
         return {"status": "success", "settings": machine.get_current_settings()}
@@ -104,4 +106,4 @@ async def get_settings():
             "reflector": None,
             "plugboard": {}
         }
-    return machine.get_current_settings() 
+    return machine.get_current_settings()

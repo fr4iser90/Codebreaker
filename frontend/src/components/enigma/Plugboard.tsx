@@ -64,7 +64,7 @@ export const Plugboard: React.FC<PlugboardProps> = ({ connections, onConnections
           const yb = rowY[ib < 13 ? 0 : 1];
           return (
             <motion.line
-              key={a + b}
+              key={`${a}-${b}`}
               x1={xa}
               y1={ya}
               x2={xb}

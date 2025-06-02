@@ -5,6 +5,7 @@ import { Plugboard } from './Plugboard';
 import { Lampboard } from './Lampboard';
 import { enigmaApi } from '@/lib/api/enigma';
 import { soundManager } from '@/lib/sounds';
+import { useSearchParams } from 'next/navigation';
 
 const ROTOR_TYPES = {
   I: { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notch: 'Q' },
@@ -22,6 +23,7 @@ const REFLECTOR_TYPES = {
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export const EnigmaSimulator: React.FC = () => {
+  const searchParams = useSearchParams();
   const [rotors, setRotors] = useState([
     { type: 'I', position: 0, ringSetting: 0 },
     { type: 'II', position: 0, ringSetting: 0 },
@@ -34,6 +36,7 @@ export const EnigmaSimulator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [initializedFromQuery, setInitializedFromQuery] = useState(false);
 
   useEffect(() => {
     const updateSettings = async () => {
@@ -45,8 +48,8 @@ export const EnigmaSimulator: React.FC = () => {
             ringSetting: r.ringSetting,
           })),
           reflector: reflector,
-          plugboard: plugboardConnections.reduce((acc, [key, value]) => {
-            acc[key] = value;
+          plugboard: plugboardConnections.reduce((acc, [a, b]) => {
+            acc[a] = b; // Only add one side of the pair
             return acc;
           }, {} as Record<string, string>),
         });
@@ -61,6 +64,43 @@ export const EnigmaSimulator: React.FC = () => {
 
     updateSettings();
   }, [rotors, reflector, plugboardConnections]);
+
+  // On mount: If query params are present, initialize state from them
+  useEffect(() => {
+    if (initializedFromQuery) return;
+    const rotorsParam = searchParams.get('rotors');
+    const reflectorParam = searchParams.get('reflector');
+    const plugboardParam = searchParams.get('plugboard');
+    const ciphertextParam = searchParams.get('ciphertext');
+    if (rotorsParam && reflectorParam && plugboardParam) {
+      try {
+        const rotorsArr = JSON.parse(rotorsParam).map((r: any) => ({
+          type: r.name,
+          position: r.position,
+          ringSetting: r.ring_setting,
+        }));
+        setRotors(rotorsArr);
+        setReflector(reflectorParam);
+        const plugArr = Object.entries(JSON.parse(plugboardParam)) as [string, string][];
+        setPlugboardConnections(plugArr);
+        if (ciphertextParam) {
+          setInputMessage(ciphertextParam);
+          // Encrypt the initial ciphertext
+          enigmaApi.encryptMessage(ciphertextParam)
+            .then(result => {
+              setOutputMessage(result.encrypted);
+            })
+            .catch(err => {
+              setError('Failed to encrypt initial message');
+              soundManager.play('error');
+            });
+        }
+        setInitializedFromQuery(true);
+      } catch (e) {
+        // ignore parse errors
+      }
+    }
+  }, [searchParams, initializedFromQuery]);
 
   const handleRotorSetPosition = (index: number, newPosition: number) => {
     soundManager.play('rotorTurn');
@@ -119,20 +159,22 @@ export const EnigmaSimulator: React.FC = () => {
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              key="error"
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-red-500 text-white p-4 rounded-lg mb-4"
+              exit={{ opacity: 0, y: 20 }}
+              className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg z-50"
             >
               {error}
             </motion.div>
           )}
           {showSuccess && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              key="success"
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-green-500 text-white p-4 rounded-lg mb-4"
+              exit={{ opacity: 0, y: 20 }}
+              className="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50"
             >
               Settings updated successfully
             </motion.div>
@@ -231,4 +273,4 @@ export const EnigmaSimulator: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};
