@@ -49,13 +49,19 @@ export const EnigmaSimulator: React.FC = () => {
           })),
           reflector: reflector,
           plugboard: plugboardConnections.reduce((acc, [a, b]) => {
-            acc[a] = b; // Only add one side of the pair
+            acc[a] = b;
             return acc;
           }, {} as Record<string, string>),
         });
         setError(null);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 2000);
+
+        // Re-encrypt the current message when settings change
+        if (inputMessage) {
+          const result = await enigmaApi.encryptMessage(inputMessage);
+          setOutputMessage(result.encrypted);
+        }
       } catch (err) {
         setError('Failed to update settings');
         soundManager.play('error');
@@ -63,7 +69,7 @@ export const EnigmaSimulator: React.FC = () => {
     };
 
     updateSettings();
-  }, [rotors, reflector, plugboardConnections]);
+  }, [rotors, reflector, plugboardConnections, inputMessage]);
 
   // On mount: If query params are present, initialize state from them
   useEffect(() => {
