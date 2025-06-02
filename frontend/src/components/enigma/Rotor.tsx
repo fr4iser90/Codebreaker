@@ -30,7 +30,7 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
   const handleDrag = (event: any, info: any) => {
     // Calculate how many steps (letters) the user has dragged
     const steps = Math.round(info.offset.y / PIXELS_PER_STEP);
-    setDragRotation(steps * (360 / NUM_LETTERS));
+    setDragRotation(-steps * (360 / NUM_LETTERS)); // Vorzeichen geändert
   };
 
   const handleDragEnd = (event: any, info: any) => {
@@ -43,6 +43,8 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
     onRotate(newPosition);
     dragY.set(0);
   };
+
+  // const topIndex = (NUM_LETTERS - position) % NUM_LETTERS; // Diese Logik ist nicht mehr nötig, da isActive direkt auf position basiert
 
   return (
     <div className="flex flex-col items-center select-none">
@@ -92,7 +94,7 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
             const angleDeg = (360 / NUM_LETTERS) * i;
             const x = CENTER;
             const y = CENTER - LETTER_RADIUS;
-            const isActive = i === 0; // Nach SVG-Rotation ist Index 0 oben
+            const isActive = i === position; // Der Buchstabe am Index 'position' ist oben
             return (
               <g key={i} style={{ userSelect: 'none' }} transform={`rotate(${angleDeg}, ${CENTER}, ${CENTER})`}>
                 {isActive && (
@@ -144,4 +146,4 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
       <div className="mt-2 text-sm text-gray-400 select-none">Ziehen zum Drehen</div>
     </div>
   );
-}; 
+};
