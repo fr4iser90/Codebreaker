@@ -3,6 +3,11 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 from app.enigma.machine import EnigmaMachine
 from ..enigma.components import Plugboard
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 machine = EnigmaMachine()
@@ -24,6 +29,8 @@ class Message(BaseModel):
 async def set_settings(settings: MachineSettings):
     """Set up the Enigma machine with the provided settings."""
     try:
+        logger.info(f"Received settings request: {settings}")
+        
         # Clear existing configuration if rotors are empty
         if not settings.rotors:
             machine.rotors = []
@@ -54,12 +61,15 @@ async def set_settings(settings: MachineSettings):
 
         return {"status": "success", "settings": machine.get_current_settings()}
     except Exception as e:
+        logger.error(f"Error in set_settings: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/encrypt")
 async def encrypt_message(message: Message):
     """Encrypt a message using the current Enigma machine settings."""
     try:
+        logger.info(f"Received encrypt request: {message}")
+        
         # Check if machine is configured
         if not machine.rotors or not machine.reflector:
             raise HTTPException(status_code=400, detail="Enigma machine not configured")
@@ -81,6 +91,7 @@ async def encrypt_message(message: Message):
             "settings": machine.get_current_settings()
         }
     except Exception as e:
+        logger.error(f"Error in encrypt_message: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/settings")

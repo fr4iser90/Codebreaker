@@ -13,8 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY ./app ./app
-COPY ./scripts ./scripts
-COPY ./entrypoint.sh /app/entrypoint.sh
 
 # Create logs directory
 RUN mkdir -p /app/logs
@@ -24,11 +22,8 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
 
-# Make entrypoint script executable
-RUN chmod +x /app/entrypoint.sh
-
 # Set up non-root user
-RUN adduser -D appuser && chown -R appuser /app
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /app
 USER appuser
 
 # Healthcheck

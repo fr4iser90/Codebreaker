@@ -13,8 +13,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include Enigma router
-app.include_router(enigma.router, prefix="/api/enigma", tags=["enigma"])
+# Include Enigma router at root level
+app.include_router(enigma.router)
 
 @app.get("/")
 async def root():
