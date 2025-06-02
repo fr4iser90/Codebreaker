@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
+import { SectionModal } from '../enigma/SectionModal';
 
 interface TimelineEvent {
   year: number;
@@ -67,6 +68,7 @@ const timelineEvents: TimelineEvent[] = [
 export const Timeline: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [solvedEvents, setSolvedEvents] = useState<Record<number, boolean>>({});
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
 
@@ -78,6 +80,17 @@ export const Timeline: React.FC = () => {
   // Calculate font size based on zoom level
   const getFontSize = (baseSize: number) => {
     return `${baseSize * zoomLevel}px`;
+  };
+
+  // Example secrets for each event (in echt: dynamisch/generiert)
+  const eventSecrets: Record<number, string> = {
+    1918: 'ENIGMA',
+    1923: 'SCHERBIUS',
+    1932: 'POLEN',
+    1939: 'BLETCHLEY',
+    1940: 'TURING',
+    1941: 'NAVY',
+    1945: 'ENDE',
   };
 
   return (
@@ -155,7 +168,7 @@ export const Timeline: React.FC = () => {
                       scale: 1.05,
                       boxShadow: "0 0 20px rgba(234, 179, 8, 0.3)"
                     }}
-                    className="bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden"
+                    className={`bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden ${solvedEvents[event.year] ? 'border-2 border-green-400' : ''}`}
                     onClick={() => setSelectedEvent(event)}
                     style={{ transform: `scale(${zoomLevel})` }}
                   >
@@ -189,6 +202,9 @@ export const Timeline: React.FC = () => {
                           />
                         </div>
                       )}
+                      {solvedEvents[event.year] && (
+                        <div className="mt-2 text-green-400 font-bold">✔ Gelöst</div>
+                      )}
                     </motion.div>
                   </motion.div>
                 </div>
@@ -197,73 +213,36 @@ export const Timeline: React.FC = () => {
           </div>
         </div>
 
-        {/* Event Detail Modal */}
-        <AnimatePresence>
-          {selectedEvent && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-              onClick={() => setSelectedEvent(null)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gray-800 p-8 rounded-lg max-w-2xl w-full"
-                onClick={e => e.stopPropagation()}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h2 
-                    className="font-bold mb-4"
-                    style={{ fontSize: getFontSize(24) }}
-                  >
-                    {selectedEvent.title}
-                  </h2>
-                  <p 
-                    className="text-gray-400 mb-4"
-                    style={{ fontSize: getFontSize(16) }}
-                  >
-                    {selectedEvent.description}
-                  </p>
-                  {selectedEvent.details && (
-                    <p 
-                      className="text-gray-300 mb-4"
-                      style={{ fontSize: getFontSize(16) }}
-                    >
-                      {selectedEvent.details}
-                    </p>
-                  )}
-                  {selectedEvent.image && (
-                    <div className="w-full h-48 relative mb-4">
-                      <Image
-                        src={selectedEvent.image}
-                        alt={selectedEvent.title}
-                        fill
-                        style={{ objectFit: 'cover', borderRadius: '0.5rem' }}
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        priority
-                      />
-                    </div>
-                  )}
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedEvent(null)}
-                    className="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-300"
-                  >
-                    Close
-                  </motion.button>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* SectionModal für Event-Details & Secret */}
+        <SectionModal
+          isOpen={!!selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+          secret={selectedEvent ? (selectedEvent.year === 1918 ? 'HELLO' : eventSecrets[selectedEvent.year] || '') : ''}
+          infoText={selectedEvent ? (
+            selectedEvent.year === 1918 ? (
+              <>
+                <div>{selectedEvent.details || selectedEvent.description}</div>
+                <div className="mt-4 p-4 bg-gray-700 rounded">
+                  <b>Enigma-Challenge:</b><br/>
+                  <b>Verschlüsselte Nachricht:</b> QVPZJ<br/>
+                  <b>Enigma-Einstellungen:</b><br/>
+                  Rotoren: I-II-III<br/>
+                  Position: A-A-A<br/>
+                  Ringstellung: 01-01-01<br/>
+                  Plugboard: A-B, C-D<br/>
+                  <br/>
+                  Entschlüssle die Nachricht mit dem Simulator und gib das Ergebnis unten ein!
+                </div>
+              </>
+            ) : (selectedEvent.details || selectedEvent.description)
+          ) : ''}
+          onSolved={() => {
+            if (selectedEvent) {
+              setSolvedEvents(prev => ({ ...prev, [selectedEvent.year]: true }));
+            }
+          }}
+          title={selectedEvent ? selectedEvent.title : ''}
+        />
       </div>
     </div>
   );
