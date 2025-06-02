@@ -80,14 +80,17 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
           </radialGradient>
         </defs>
         {/* Rotating group of letters */}
-        <g style={{ transformOrigin: `${CENTER}px ${CENTER}px` }}>
+        <g>
           {letters.map((letter, i) => {
-            const angle = (2 * Math.PI / NUM_LETTERS) * i - Math.PI / 2;
-            const x = CENTER + LETTER_RADIUS * Math.cos(angle);
-            const y = CENTER + LETTER_RADIUS * Math.sin(angle);
-            const isActive = i === 0;
+            // Berechne, welcher Buchstabe oben ist
+            const letterIndex = (i - position + NUM_LETTERS) % NUM_LETTERS;
+            const angleDeg = (360 / NUM_LETTERS) * i;
+            const angleRad = (2 * Math.PI / NUM_LETTERS) * i - Math.PI / 2;
+            const x = CENTER;
+            const y = CENTER - LETTER_RADIUS;
+            const isActive = letterIndex === 0; // Der Buchstabe oben
             return (
-              <g key={i} style={{ userSelect: 'none' }}>
+              <g key={i} style={{ userSelect: 'none' }} transform={`rotate(${angleDeg}, ${CENTER}, ${CENTER})`}>
                 {isActive && (
                   <circle
                     cx={x}
@@ -95,6 +98,7 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
                     r={16}
                     fill="url(#glow)"
                     style={{ filter: "blur(2px)" }}
+                    pointerEvents="none"
                   />
                 )}
                 <text
@@ -110,8 +114,9 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
                       ? "0 0 8px #ffe066, 0 0 2px #fff"
                       : "0 0 2px #222",
                     transition: "font-size 0.2s, fill 0.2s",
-                    userSelect: 'none'
+                    userSelect: 'none',
                   }}
+                  pointerEvents="none"
                 >
                   {letter}
                 </text>
