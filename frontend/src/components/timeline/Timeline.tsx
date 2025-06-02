@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 
 interface TimelineEvent {
   year: number;
@@ -16,49 +17,49 @@ const timelineEvents: TimelineEvent[] = [
     year: 1918,
     title: "First Enigma Machine",
     description: "Arthur Scherbius patents the first Enigma machine, originally designed for commercial use.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Enigma-Machine.jpg/960px-Enigma-Machine.jpg?20110410205427",
     details: "The first Enigma machine was developed by Arthur Scherbius, a German engineer. Initially, it was marketed as a commercial encryption device for businesses to protect their communications."
   },
   {
     year: 1923,
-    title: "Commercial Enigma",
+    title: "Enigma in use (Bundesarchiv)",
     description: "The first commercial Enigma machine is produced by Scherbius & Ritter.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Bundesarchiv_Bild_101I-241-2173-09%2C_Russland%2C_Verschl%C3%BCsselungsger%C3%A4t_Enigma.jpg/640px-Bundesarchiv_Bild_101I-241-2173-09%2C_Russland%2C_Verschl%C3%BCsselungsger%C3%A4t_Enigma.jpg",
     details: "The commercial version of the Enigma machine was produced by Scherbius & Ritter. It featured a keyboard and lampboard, making it easier to use than previous encryption devices."
   },
   {
     year: 1932,
-    title: "Polish Breakthrough",
+    title: "Plugboard of an Enigma machine",
     description: "Polish mathematicians Marian Rejewski, Jerzy Różycki, and Henryk Zygalski begin breaking Enigma codes.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/2/27/Enigma-plugboard.jpg?20120102194333",
     details: "The Polish Cipher Bureau, led by Marian Rejewski, made the first breakthrough in breaking Enigma codes. They developed the 'bomba' machine, a forerunner to the British Bombe."
   },
   {
     year: 1939,
     title: "Bletchley Park Setup",
     description: "The British Government Code and Cypher School moves to Bletchley Park.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Bletchley_Park_Mansion.jpg/800px-Bletchley_Park_Mansion.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Bletchley_Park_Mansion.jpg/1600px-Bletchley_Park_Mansion.jpg?20170304232652",
     details: "Bletchley Park became the central site for British codebreakers during World War II. The estate was chosen for its location between Oxford and Cambridge universities."
   },
   {
     year: 1940,
     title: "Turing's Bombe",
     description: "Alan Turing and Gordon Welchman develop the Bombe machine to break Enigma codes.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Bombe_rebuild_at_Bletchley_Park.jpg/800px-Bombe_rebuild_at_Bletchley_Park.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Bombe-rebuild.jpg?20140417024253",
     details: "Alan Turing and Gordon Welchman developed the Bombe machine, which could find the daily settings of the Enigma machines. This was a crucial breakthrough in breaking German communications."
   },
   {
     year: 1941,
     title: "Naval Enigma Broken",
     description: "The British successfully break the Naval Enigma code, a major breakthrough in the war.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Enigma-Machine.jpg/960px-Enigma-Machine.jpg?20110410205427",
     details: "Breaking the Naval Enigma was particularly challenging as it used more complex settings. This breakthrough helped the Allies track German U-boat movements."
   },
   {
     year: 1945,
     title: "War End and Legacy",
     description: "The war ends, and the work at Bletchley Park remains classified for decades.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Bletchley_Park_Mansion.jpg/800px-Bletchley_Park_Mansion.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Bletchley_Park_Mansion.jpg/1600px-Bletchley_Park_Mansion.jpg?20170304232652",
     details: "After the war, the work at Bletchley Park remained classified for decades. The contributions of the codebreakers, including Alan Turing, were not fully recognized until much later."
   },
 ];
@@ -177,15 +178,16 @@ export const Timeline: React.FC = () => {
                         {event.description}
                       </p>
                       {event.image && (
-                        <motion.img
-                          src={event.image}
-                          alt={event.title}
-                          className="w-full h-32 object-cover rounded-lg mt-4"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5 }}
-                        />
+                        <div className="w-full h-32 relative mt-4">
+                          <Image
+                            src={event.image}
+                            alt={event.title}
+                            fill
+                            style={{ objectFit: 'cover', borderRadius: '0.5rem' }}
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            priority={index < 2}
+                          />
+                        </div>
                       )}
                     </motion.div>
                   </motion.div>
@@ -238,14 +240,16 @@ export const Timeline: React.FC = () => {
                     </p>
                   )}
                   {selectedEvent.image && (
-                    <motion.img
-                      src={selectedEvent.image}
-                      alt={selectedEvent.title}
-                      className="w-full h-48 object-cover rounded-lg mb-4"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 }}
-                    />
+                    <div className="w-full h-48 relative mb-4">
+                      <Image
+                        src={selectedEvent.image}
+                        alt={selectedEvent.title}
+                        fill
+                        style={{ objectFit: 'cover', borderRadius: '0.5rem' }}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        priority
+                      />
+                    </div>
                   )}
                   <motion.button
                     whileHover={{ scale: 1.05 }}

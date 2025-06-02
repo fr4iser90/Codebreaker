@@ -50,3 +50,34 @@ Theme Relevance 	Strong connection to Hackstory’s mission: Code the Past. Shap
  
 
 Recognitions will be given to outstanding projects during the final showcase on May 31, 2025.
+
+
+
+
+To successfully submit your project for Hackstory, please ensure the following:
+
+    Website Link
+    Submit a fully functional website (hosted on GitHub Pages, Netlify, Vercel, or any public platform) that focuses on a historical event — preferably one that is lesser-known or untold.
+
+    Historical Focus
+    Your website must clearly highlight a real historical event, movement, person, or theme. Projects that uncover untold stories or spotlight marginalized voices are highly encouraged.
+
+    Source Citations
+    Include a references section or page citing at least 3 reliable sources used in your research. Accuracy matters.
+
+    Team Info
+    Provide names of all team members, grade levels, and a 1-2 sentence description of each person's role.
+
+    Project Description (100–200 words)
+    Include a brief write-up explaining your website’s purpose, who or what it focuses on, and why you chose that story.
+
+    Submitted by Deadline
+    Final projects must be submitted by May 30 at 11:59 PM.
+
+Submit
+Prizes
+$100 in prizes
+$100
+$100 in cash
+1 winner
+
