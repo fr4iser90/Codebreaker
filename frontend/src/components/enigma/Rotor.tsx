@@ -46,6 +46,13 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
 
   return (
     <div className="flex flex-col items-center select-none">
+      {/* Pfeil bei 12 Uhr */}
+      <div style={{ height: 18, marginBottom: -6 }}>
+        <svg width="28" height="18" style={{ display: 'block', margin: '0 auto' }}>
+          {/* Pfeilspitze unten, Basis oben */}
+          <polygon points="14,16 24,2 4,2" fill="#ffe066" stroke="#bfa600" strokeWidth="1.5" />
+        </svg>
+      </div>
       <motion.svg
         width={140}
         height={140}
@@ -82,13 +89,10 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
         {/* Rotating group of letters */}
         <g>
           {letters.map((letter, i) => {
-            // Berechne, welcher Buchstabe oben ist
-            const letterIndex = (i - position + NUM_LETTERS) % NUM_LETTERS;
             const angleDeg = (360 / NUM_LETTERS) * i;
-            const angleRad = (2 * Math.PI / NUM_LETTERS) * i - Math.PI / 2;
             const x = CENTER;
             const y = CENTER - LETTER_RADIUS;
-            const isActive = letterIndex === 0; // Der Buchstabe oben
+            const isActive = i === 0; // Nach SVG-Rotation ist Index 0 oben
             return (
               <g key={i} style={{ userSelect: 'none' }} transform={`rotate(${angleDeg}, ${CENTER}, ${CENTER})`}>
                 {isActive && (
@@ -134,9 +138,9 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
           fill="#ffe066"
           style={{ letterSpacing: 2, textShadow: "0 0 8px #ffe066", userSelect: 'none' }}
         >
-          {label}
         </text>
       </motion.svg>
+      {label}
       <div className="mt-2 text-sm text-gray-400 select-none">Ziehen zum Drehen</div>
     </div>
   );
