@@ -4,8 +4,10 @@ import { motion, useMotionValue } from "framer-motion";
 interface RotorProps {
   letters: string[];
   position: number;
+  ringSetting: number;
   label: string;
   onRotate: (newPosition: number) => void;
+  onRingSettingChange: (newRingSetting: number) => void;
 }
 
 const ROTOR_RADIUS = 60;
@@ -14,7 +16,7 @@ const CENTER = 70;
 const NUM_LETTERS = 26;
 const PIXELS_PER_STEP = 30;
 
-export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate }) => {
+export const Rotor: React.FC<RotorProps> = ({ letters, position, ringSetting, label, onRotate, onRingSettingChange }) => {
   const [dragStartPosition, setDragStartPosition] = useState<number | null>(null);
   const [dragRotation, setDragRotation] = useState(0);
   const dragY = useMotionValue(0);
@@ -22,6 +24,12 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
   // Calculate the total rotation: base + drag
   const baseRotation = -position * (360 / NUM_LETTERS);
   const totalRotation = baseRotation + dragRotation;
+
+  // Ring Setting logic
+  const [dragStartRing, setDragStartRing] = useState<number | null>(null);
+  const [dragRingRotation, setDragRingRotation] = useState(0);
+  const baseRingRotation = -ringSetting * (360 / NUM_LETTERS);
+  const totalRingRotation = baseRingRotation + dragRingRotation;
 
   const handleDragStart = () => {
     setDragStartPosition(position);
@@ -42,6 +50,22 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
     setDragStartPosition(null);
     onRotate(newPosition);
     dragY.set(0);
+  };
+
+  const handleRingDragStart = () => {
+    setDragStartRing(ringSetting);
+  };
+  const handleRingDrag = (event: any, info: any) => {
+    const steps = Math.round(info.offset.y / PIXELS_PER_STEP);
+    setDragRingRotation(-steps * (360 / NUM_LETTERS));
+  };
+  const handleRingDragEnd = (event: any, info: any) => {
+    const steps = Math.round(info.offset.y / PIXELS_PER_STEP);
+    let newRing = ((dragStartRing ?? ringSetting) + steps) % NUM_LETTERS;
+    if (newRing < 0) newRing += NUM_LETTERS;
+    setDragRingRotation(0);
+    setDragStartRing(null);
+    onRingSettingChange(newRing);
   };
 
   // const topIndex = (NUM_LETTERS - position) % NUM_LETTERS; // Diese Logik ist nicht mehr nötig, da isActive direkt auf position basiert
@@ -142,6 +166,62 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, label, onRotate
         >
         </text>
       </motion.svg>
+      {/* Ring Setting SVG below the main rotor */}
+      <motion.svg
+        width={100}
+        height={100}
+        style={{ marginTop: -30, rotate: totalRingRotation }}
+        className="cursor-grab active:cursor-grabbing"
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={0}
+        onDragStart={handleRingDragStart}
+        onDrag={handleRingDrag}
+        onDragEnd={handleRingDragEnd}
+        transition={{ type: "spring", stiffness: 999, damping: 60 }}
+      >
+        <circle
+          cx={50}
+          cy={50}
+          r={38}
+          fill="#222"
+          stroke="#ffe066"
+          strokeWidth={2}
+        />
+        {letters.map((letter, i) => {
+          const angleDeg = (360 / NUM_LETTERS) * i;
+          const x = 50;
+          const y = 50 - 32;
+          const isActive = i === ringSetting;
+          return (
+            <g key={i} style={{ userSelect: 'none' }} transform={`rotate(${angleDeg}, 50, 50)`}>
+              {isActive && (
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={10}
+                  fill="#ffe066"
+                  opacity={0.3}
+                  pointerEvents="none"
+                />
+              )}
+              <text
+                x={x}
+                y={y + 5}
+                textAnchor="middle"
+                fontFamily="'Share Tech Mono', 'IBM Plex Mono', monospace"
+                fontSize={isActive ? 16 : 13}
+                fill={isActive ? "#ffe066" : "#bbb"}
+                style={{ fontWeight: isActive ? 700 : 400, userSelect: 'none' }}
+                pointerEvents="none"
+              >
+                {letter}
+              </text>
+            </g>
+          );
+        })}
+      </motion.svg>
+      <div className="text-xs text-gray-400 select-none mb-1">Ringstellung: {letters[ringSetting]}</div>
       {label}
       <div className="mt-2 text-sm text-gray-400 select-none">Ziehen zum Drehen</div>
     </div>

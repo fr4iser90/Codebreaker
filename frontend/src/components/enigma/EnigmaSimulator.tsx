@@ -118,6 +118,16 @@ export const EnigmaSimulator: React.FC = () => {
     setRotors(newRotors);
   };
 
+  const handleRotorSetRingSetting = (index: number, newRingSetting: number) => {
+    soundManager.play('rotorTurn');
+    const newRotors = [...rotors];
+    newRotors[index] = {
+      ...newRotors[index],
+      ringSetting: newRingSetting
+    };
+    setRotors(newRotors);
+  };
+
   const handleReflectorChange = (newReflector: string) => {
     soundManager.play('keyPress');
     setReflector(newReflector);
@@ -199,8 +209,10 @@ export const EnigmaSimulator: React.FC = () => {
                     key={index}
                     letters={ALPHABET}
                     position={rotor.position}
+                    ringSetting={rotor.ringSetting}
                     label={`Rotor ${index + 1}`}
                     onRotate={(newPosition) => handleRotorSetPosition(index, newPosition)}
+                    onRingSettingChange={(newRingSetting) => handleRotorSetRingSetting(index, newRingSetting)}
                   />
                 ))}
               </div>
