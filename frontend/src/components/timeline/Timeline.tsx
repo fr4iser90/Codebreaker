@@ -99,9 +99,23 @@ const timelineEvents: TimelineEvent[] = [
 
 export const Timeline: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
-  const [solvedEvents, setSolvedEvents] = useState<Record<number, boolean>>({});
+  const [solvedEvents, setSolvedEvents] = useState<Record<number, boolean>>(() => {
+    // Load solved events from localStorage on component mount
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('solvedEnigmaChallenges');
+      return saved ? JSON.parse(saved) : {};
+    }
+    return {};
+  });
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+
+  // Save solved events to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('solvedEnigmaChallenges', JSON.stringify(solvedEvents));
+    }
+  }, [solvedEvents]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">

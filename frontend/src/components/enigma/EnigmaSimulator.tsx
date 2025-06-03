@@ -24,6 +24,7 @@ interface EnigmaSimulatorProps {
   initialSettings?: PublicSettingsData | null;
   ciphertext?: string | null;
   onCopyOutputToModal?: (output: string) => void;
+  challengeId?: number;
 }
 
 const ROTOR_TYPES = {
@@ -41,7 +42,7 @@ const REFLECTOR_TYPES = {
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext, onCopyOutputToModal }) => {
+export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext, onCopyOutputToModal, challengeId }) => {
   const searchParams = useSearchParams();
   const [rotors, setRotors] = useState([
     { type: 'I', position: 0, ringSetting: 0 }, // Default initial state
@@ -207,18 +208,51 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
     if (newInput.length > 0) {
       setIsLoading(true);
       try {
+        // First encrypt to see the decrypted message
         const result = await enigmaApi.encryptMessage(newInput);
         setOutputMessage(result.encrypted);
+        
+        // Then validate if we have a challengeId
+        if (challengeId) {
+          // Validate the decrypted message (result.encrypted)
+          const validationResult = await enigmaApi.validateSolution(challengeId, result.encrypted);
+          if (validationResult.correct) {
+            setShowSuccess(true);
+            soundManager.play('keyPress');
+            if (onCopyOutputToModal) {
+              onCopyOutputToModal(result.encrypted);
+            }
+          }
+        }
+        
         setError(null);
-        soundManager.play('keyPress');
       } catch (err) {
-        setError('Failed to encrypt message');
+        setError('Failed to process message');
         soundManager.play('error');
       } finally {
         setIsLoading(false);
       }
     } else {
       setOutputMessage('');
+    }
+  };
+
+  // Add function to validate solution
+  const validateSolution = async () => {
+    if (!outputMessage || !challengeId) return;
+    
+    try {
+      const result = await enigmaApi.validateSolution(challengeId, outputMessage);
+      if (result.correct) {
+        setShowSuccess(true);
+        soundManager.play('keyPress');
+      } else {
+        setError('Incorrect solution. Try again!');
+        soundManager.play('error');
+      }
+    } catch (err) {
+      setError('Failed to validate solution');
+      soundManager.play('error');
     }
   };
 

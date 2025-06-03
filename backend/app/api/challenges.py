@@ -45,7 +45,7 @@ CHALLENGES = [
     {
         "id": 2,
         "title": "Level 2: Plugboard Primer",
-        "ciphertext": "JMEHGLQBYBHBKQP! QSS OLTJ UMMACCQE HMT GRSDCHQYY JRS LWGPRWYNK HOBDW 2.",
+        "ciphertext": "JMEHGXQAYBHAKQP! QSS ORTJ UOMBCCQE HMT GRSDSHIYY PRS LWGPRWYNK HOADW 2.",
         "settings": {
             "rotors": [
                 {"name": "II", "position": 10, "ring_setting": 1}, # position 10 = K, ring 1 = B
@@ -53,7 +53,7 @@ CHALLENGES = [
                 {"name": "III", "position": 11, "ring_setting": 4} # position 11 = L, ring 4 = E
             ],
             "reflector": "B",
-            "plugboard": {}
+            "plugboard": {"A": "B"}
         },
         "settings_public": {
             "rotors": [
@@ -68,6 +68,7 @@ CHALLENGES = [
         "info": (
             "Level 2: Plugboard Primer\n\n"
             "Level 2 brings in the plugboard, the set of cables on the front of Enigma. Here you'll see how swapping letters adds to the confusion. We'll still give you all settings this time, but notice the ring settings are no longer all A (0) – they now shift the internal wiring, making the cipher more complex.\n\n"
+            "Clue: The correct plugboard settings are: A↔B. Try these as your starting point!\n\n"
             "Info:\n\n"
             "    Plugboard swaps: The plugboard adds an extra substitution step (101computing.net). "
             "For instance, a cable connecting A↔B will swap those letters whenever they are typed. In practice German operators used about 8–10 cables, each swapping two letters (e.g. W↔D, V↔Z) (101computing.net).\n\n"

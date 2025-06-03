@@ -27,6 +27,7 @@ class Message(BaseModel):
     text: str
 
 class ChallengeResponse(BaseModel):
+    id: int
     ciphertext: str
     settings: dict
     info: str
@@ -134,6 +135,7 @@ async def get_enigma_challenge_by_id(challenge_id: int):
     for challenge in CHALLENGES:
         if challenge["id"] == challenge_id:
             return {
+                "id": challenge["id"],
                 "ciphertext": challenge["ciphertext"],
                 "settings": challenge["settings"],
                 "info": challenge["info"],
