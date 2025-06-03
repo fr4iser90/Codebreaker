@@ -255,19 +255,35 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
             {/* Rotors */}
             <div className="bg-gray-800 p-6 rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Rotors</h2>
-              <div className="grid grid-cols-3 gap-4">
-                {rotors.map((rotor, index) => (
-                  <Rotor
-                    key={index}
-                    letters={ALPHABET}
-                    position={rotor.position}
-                    ringSetting={rotor.ringSetting}
-                    label={`Rotor ${index + 1}`}
-                    onRotate={(newPosition) => handleRotorSetPosition(index, newPosition)}
-                    onRingSettingChange={(newRingSetting) => handleRotorSetRingSetting(index, newRingSetting)}
-                  />
-                ))}
-              </div>
+<div className="grid grid-cols-3 gap-4">
+  {rotors.map((rotor, index) => (
+    <div key={index} className="flex flex-col items-center">
+      {/* Rotor type selector */}
+      <select
+        value={rotor.type}
+        onChange={e => {
+          const newType = e.target.value;
+          const newRotors = [...rotors];
+          newRotors[index] = { ...newRotors[index], type: newType };
+          setRotors(newRotors);
+        }}
+        className="mb-2 px-2 py-1 rounded bg-gray-700 text-yellow-300 font-mono text-center"
+      >
+        {Object.keys(ROTOR_TYPES).map(type => (
+          <option key={type} value={type}>{type}</option>
+        ))}
+      </select>
+      <Rotor
+        letters={ALPHABET}
+        position={rotor.position}
+        ringSetting={rotor.ringSetting}
+        label={rotor.type}
+        onRotate={(newPosition) => handleRotorSetPosition(index, newPosition)}
+        onRingSettingChange={(newRingSetting) => handleRotorSetRingSetting(index, newRingSetting)}
+      />
+    </div>
+  ))}
+</div>
             </div>
 
             {/* Reflector Selection */}

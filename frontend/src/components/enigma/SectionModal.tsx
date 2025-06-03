@@ -88,122 +88,118 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+          className="fixed inset-0 z-50 flex flex-col md:flex-row items-stretch justify-stretch bg-black bg-opacity-80"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className={`flex flex-col md:flex-row gap-6 w-full max-w-6xl items-stretch justify-center p-4 md:p-0`}>
-            {/* Challenge Modal Content */}
+          {/* Challenge Modal Content */}
+          <motion.div
+            className={`flex-1 h-full w-full overflow-auto p-6 md:p-12 bg-gray-900 relative flex flex-col md:basis-1/2`}
+            initial={{ scale: 0.95, y: 40 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 40 }}
+          >
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              onClick={handleClose}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-yellow-400">{title}</h2>
+            <div className="mb-4 text-gray-200 whitespace-pre-line overflow-y-auto max-h-[30vh] md:max-h-[40vh]">
+              {challenge ? challenge.info : 'Loading...'}
+            </div>
+            {challenge && (
+              <div className="mb-4 p-4 bg-gray-800 rounded">
+                <h3 className="text-lg font-semibold text-yellow-300 mb-2">Enigma Challenge Details</h3>
+                <b>Encrypted Message:</b> <span className="font-mono text-yellow-200">{challenge.ciphertext}</span><br/>
+                {challenge.settings_public && (
+                  <div className="mt-2 pt-2 text-sm">
+                    <h4 className="text-md font-semibold text-yellow-300 mb-1">Public Settings:</h4>
+                    <div className="ml-2">
+                      <b>Rotors:</b>
+                      <div className="flex flex-col gap-1 mt-1 mb-1 text-xs">
+                        {challenge.settings_public.rotors.map((r, idx) => (
+                          <div key={`public-rotor-display-${idx}`} className="flex items-center gap-2">
+                            <span className="font-mono text-yellow-200">
+                              {r.name} (Pos: {r.position !== null ? String.fromCharCode(65 + r.position) : '?'}, Ring: {r.ring_setting !== null ? String.fromCharCode(65 + r.ring_setting) : '?'})
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <b>Reflector:</b> <span className="font-mono text-yellow-200">{challenge.settings_public.reflector || '?'}</span><br/>
+                      <b>Plugboard:</b> <span className="font-mono text-yellow-200">
+                        {Object.entries(challenge.settings_public.plugboard || {}).length > 0
+                          ? Object.entries(challenge.settings_public.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
+                          : 'None'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <br/>
+                Use the "Open Enigma Simulator" button to try and decrypt the message with these settings.
+              </div>
+            )}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-400 mb-2">
+                Decrypt the secret:
+              </label>
+              <input
+                type="text"
+                value={userInput}
+                onChange={e => setUserInput(e.target.value)}
+                className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-yellow-400"
+                placeholder="Enter your solution..."
+                disabled={solved}
+              />
+              {error && <div className="text-red-400 mt-2">{error}</div>}
+            </div>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded font-bold hover:bg-blue-400 transition mr-2"
+              onClick={() => setShowSimulator(true)}
+              disabled={showSimulator}
+            >
+              Open Enigma Simulator
+            </button>
+            {solved ? (
+              <div className="text-green-400 font-semibold mb-4">Correct! You've solved the secret 🎉</div>
+            ) : (
+              <button
+                className="bg-yellow-400 text-gray-900 px-4 py-2 rounded font-bold hover:yellow-300 transition"
+                onClick={handleCheck}
+              >
+                Check
+              </button>
+            )}
+            {solved && (
+              <button
+                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-400 transition"
+                onClick={handleClose}
+              >
+                Continue
+              </button>
+            )}
+          </motion.div>
+          {/* Simulator Side-by-Side */}
+          {showSimulator && (
             <motion.div
-              className={`bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 w-full ${showSimulator ? 'md:w-1/2' : 'md:max-w-xl'} relative flex flex-col`}
+              className="flex-1 h-full w-full md:basis-1/2 overflow-auto p-6 md:p-12 bg-gray-900 relative flex flex-col border-l border-gray-800"
               initial={{ scale: 0.95, y: 40 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 40 }}
             >
               <button
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
-                onClick={handleClose}
+                onClick={() => setShowSimulator(false)}
                 aria-label="Close"
               >
                 ×
               </button>
-              <h2 className="text-2xl font-bold mb-4 text-yellow-400">{title}</h2>
-              <div className="mb-4 text-gray-200 whitespace-pre-line overflow-y-auto max-h-[200px] md:max-h-[300px]">
-                {challenge ? challenge.info : 'Loading...'}
-              </div>
-              
-              {challenge && (
-                <div className="mb-4 p-4 bg-gray-800 rounded">
-                  <h3 className="text-lg font-semibold text-yellow-300 mb-2">Enigma Challenge Details</h3>
-                  <b>Encrypted Message:</b> <span className="font-mono text-yellow-200">{challenge.ciphertext}</span><br/>
-                  
-                  {challenge.settings_public && (
-                    <div className="mt-2 pt-2 text-sm">
-                      <h4 className="text-md font-semibold text-yellow-300 mb-1">Public Settings:</h4>
-                      <div className="ml-2">
-                        <b>Rotors:</b>
-                        <div className="flex flex-col gap-1 mt-1 mb-1 text-xs">
-                          {challenge.settings_public.rotors.map((r, idx) => (
-                            <div key={`public-rotor-display-${idx}`} className="flex items-center gap-2">
-                              <span className="font-mono text-yellow-200">
-                                {r.name} (Pos: {r.position !== null ? String.fromCharCode(65 + r.position) : '?'}, Ring: {r.ring_setting !== null ? String.fromCharCode(65 + r.ring_setting) : '?'})
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                        <b>Reflector:</b> <span className="font-mono text-yellow-200">{challenge.settings_public.reflector || '?'}</span><br/>
-                        <b>Plugboard:</b> <span className="font-mono text-yellow-200">
-                          {Object.entries(challenge.settings_public.plugboard || {}).length > 0
-                            ? Object.entries(challenge.settings_public.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
-                            : 'None'}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                  <br/>
-                  Use the "Open Enigma Simulator" button to try and decrypt the message with these settings.
-                </div>
-              )}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Decrypt the secret:
-                </label>
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={e => setUserInput(e.target.value)}
-                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter your solution..."
-                  disabled={solved}
-                />
-                {error && <div className="text-red-400 mt-2">{error}</div>}
-              </div>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded font-bold hover:bg-blue-400 transition mr-2"
-                onClick={() => setShowSimulator(true)}
-                disabled={showSimulator}
-              >
-                Open Enigma Simulator
-              </button>
-              {solved ? (
-                <div className="text-green-400 font-semibold mb-4">Correct! You've solved the secret 🎉</div>
-              ) : (
-                <button
-                  className="bg-yellow-400 text-gray-900 px-4 py-2 rounded font-bold hover:yellow-300 transition"
-                  onClick={handleCheck}
-                >
-                  Check
-                </button>
-              )}
-              {solved && (
-                <button
-                  className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-400 transition"
-                  onClick={handleClose}
-                >
-                  Continue
-                </button>
-              )}
+              <EnigmaSimulator initialSettings={userSettings} />
             </motion.div>
-            {/* Simulator Side-by-Side */}
-            {showSimulator && (
-              <motion.div
-                className="bg-gray-900 rounded-lg shadow-lg p-4 w-full md:w-1/2 flex flex-col relative"
-                initial={{ scale: 0.95, y: 40 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 40 }}
-              >
-                <button
-                  className="absolute top-2 right-2 text-gray-400 hover:text-white"
-                  onClick={() => setShowSimulator(false)}
-                  aria-label="Close"
-                >
-                  ×
-                </button>
-                <EnigmaSimulator initialSettings={userSettings} />
-              </motion.div>
-            )}
-          </div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

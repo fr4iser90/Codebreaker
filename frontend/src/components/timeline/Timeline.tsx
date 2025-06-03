@@ -43,7 +43,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1932,
     title: "Polish Mathematical Breakthrough",
     description: "Marian Rejewski, Jerzy Różycki, and Henryk Zygalski revolutionize cryptanalysis with mathematical theory.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Marian_Rejewski.jpg/800px-Marian_Rejewski.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Marian_Rejewski_1932_small.jpg/175px-Marian_Rejewski_1932_small.jpg",
     details: "Three young mathematicians from Poznań University, secretly recruited by Poland's Cipher Bureau, made the first major breakthrough in breaking Enigma. Using permutation theory, they reverse-engineered the machine's wiring and built the first 'bomba' machine.",
     challengeId: 10,
   },
@@ -51,7 +51,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1933,
     title: "Enigma's Mechanical Design",
     description: "The complex mechanical design of the Enigma machine is fully understood and documented.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Enigma_rotors_with_alphabet_rings.jpg/800px-Enigma_rotors_with_alphabet_rings.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Enigma-rotor-stack.jpg/640px-Enigma-rotor-stack.jpg",
     details: "The Enigma's mechanical design featured a keyboard, lampboard, and stack of rotors, each wired differently. The machine's complexity came from its ability to generate approximately 1.59×10^20 possible key combinations.",
     challengeId: 9,
   },
@@ -75,7 +75,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1941,
     title: "Naval Enigma Broken",
     description: "The British successfully break the Naval Enigma code, a major breakthrough in the war.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Enigma-Machine.jpg/960px-Enigma-Machine.jpg?20110410205427",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Bletchley_Park_Naval_Enigma_IMG_3604.JPG/1280px-Bletchley_Park_Naval_Enigma_IMG_3604.JPG",
     details: "Breaking the Naval Enigma was particularly challenging as it used more complex settings. This breakthrough helped the Allies track German U-boat movements.",
     challengeId: 6,
   },
@@ -83,7 +83,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1941,
     title: "Battle of Cape Matapan",
     description: "A decisive naval victory made possible by breaking Italian naval codes at Bletchley Park.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Battle_of_Cape_Matapan_map.jpg/800px-Battle_of_Cape_Matapan_map.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/9/99/Battle_of_Cape_Matapan_map.gif?20210409233317",
     details: "In March 1941, Mavis Batey's decryption of Italian naval Enigma messages led to a crucial victory at Cape Matapan. The intelligence allowed Admiral Cunningham to sink three heavy cruisers and two destroyers without major British losses.",
     challengeId: 8,
   },
@@ -91,7 +91,7 @@ const timelineEvents: TimelineEvent[] = [
     year: 1945,
     title: "War End and Legacy",
     description: "The war ends, and the work at Bletchley Park remains classified for decades.",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Bletchley_Park_Mansion.jpg/1600px-Bletchley_Park_Mansion.jpg?20170304232652",
+    image: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Bundesarchiv_Bild_101II-MW-4222-02A%2C_%22Enigma%22_auf_U-Boot_U-124.jpg",
     details: "After the war, the work at Bletchley Park remained classified for decades. The contributions of the codebreakers, including Alan Turing, were not fully recognized until much later.",
     challengeId: 7,
   },
@@ -203,7 +203,6 @@ export const Timeline: React.FC = () => {
             }
           }}
           title={selectedEvent ? selectedEvent.title : ''}
-          image={selectedEvent ? selectedEvent.image : undefined} // Pass the image URL
         />
       </div>
     </div>
