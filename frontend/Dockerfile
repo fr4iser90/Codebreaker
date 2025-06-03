@@ -23,6 +23,9 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine AS runner
 
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
 # Set up non-root user first
 RUN adduser --disabled-password --gecos '' appuser
 
@@ -47,8 +50,8 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Healthcheck
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --spider -q http://localhost:3000 || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --start-period=2s --retries=2 \
+  CMD curl -f http://localhost:3000 || exit 1
 
 # Start application
 CMD ["npm", "start"]
