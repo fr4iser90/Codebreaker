@@ -22,6 +22,7 @@ interface PublicSettingsData {
 
 interface EnigmaSimulatorProps {
   initialSettings?: PublicSettingsData | null;
+  ciphertext?: string | null;
 }
 
 const ROTOR_TYPES = {
@@ -39,7 +40,7 @@ const REFLECTOR_TYPES = {
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings }) => {
+export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext }) => {
   const searchParams = useSearchParams();
   const [rotors, setRotors] = useState([
     { type: 'I', position: 0, ringSetting: 0 }, // Default initial state
@@ -60,7 +61,7 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
   useEffect(() => {
     if (initialSettings && !initializedFromProps && !initializedFromQuery) {
       const newRotors = initialSettings.rotors.map(r => ({
-        type: r.name,
+        type: r.name || 'I',
         // Ensure position and ringSetting are numbers, default to 0 if null
         position: r.position !== null ? r.position : 0,
         ringSetting: r.ring_setting !== null ? r.ring_setting : 0,
@@ -81,6 +82,19 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
       setInitializedFromProps(true); // Mark as initialized from props
     }
   }, [initialSettings, initializedFromProps, initializedFromQuery]);
+
+  // Track last ciphertext to ensure input updates when challenge changes
+  const [lastCiphertext, setLastCiphertext] = useState<string | null>(null);
+
+  // Effect to auto-fill input with ciphertext on mount/challenge change
+  useEffect(() => {
+    if (ciphertext && ciphertext !== lastCiphertext) {
+      setInputMessage(ciphertext);
+      setLastCiphertext(ciphertext);
+    }
+    // Only run when ciphertext changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ciphertext]);
   
   useEffect(() => {
     // Do not run updateSettings if not initialized from props or query yet,
@@ -133,7 +147,7 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
     if (rotorsParam && reflectorParam && plugboardParam) {
       try {
         const rotorsArr = JSON.parse(rotorsParam).map((r: any) => ({
-          type: r.name,
+          type: r.name || 'I',
           position: r.position,
           ringSetting: r.ring_setting,
         }));
@@ -322,6 +336,16 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
           <div className="space-y-8">
             <div className="bg-gray-800 p-6 rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Message</h2>
+              {ciphertext && (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    Challenge Ciphertext
+                  </label>
+                  <div className="w-full bg-gray-900 text-yellow-300 font-mono p-3 rounded-lg break-words select-all">
+                    {ciphertext}
+                  </div>
+                </div>
+              )}
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">
@@ -338,7 +362,7 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
                   <label className="block text-sm font-medium text-gray-400 mb-2">
                     Output
                   </label>
-                  <div className="w-full h-32 bg-gray-700 text-white p-4 rounded-lg">
+                  <div className="w-full h-32 bg-gray-700 text-white p-4 rounded-lg overflow-x-auto break-words whitespace-pre-wrap">
                     {isLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <motion.div

@@ -2,7 +2,7 @@ CHALLENGES = [
     {
         "id": 1,
         "title": "Level 1: The Enigma’s Origin",
-        "ciphertext": "ILBDAQNBWHF",
+        "ciphertext": "RYRF IAXC! IZG JUASAG OKBG KXUAW MBOIRT WQHXZTN.",
         "settings": {
             "rotors": [
                 {"name": "I", "position": 0, "ring_setting": 0}, # A, A
@@ -43,7 +43,7 @@ CHALLENGES = [
     {
         "id": 2,
         "title": "Level 2: Plugboard Primer",
-        "ciphertext": "WYMCIBOLNOAC",
+        "ciphertext": "XMFHHXQAYBGAKQP! QSS MRTN UOMBCDJP GFJ HRSDSGIYS PRN KDVPRWYTN GZAUW 2.",
         "settings": {
             "rotors": [
                 {"name": "II", "position": 10, "ring_setting": 1}, # K, B
@@ -82,7 +82,7 @@ CHALLENGES = [
     {
         "id": 3,
         "title": "Level 3: Polish Breakthrough!",
-        "ciphertext": "MCFFISJOHIISAMIH",
+        "ciphertext": "OENBMLNQSV YACU! YBON YVB WBJCUB JILMYLVSBATZP, IBV UPRS CYRRVX LZGUXXS WL UFZ OFKI IKSAA.",
         "settings": {
             "rotors": [
                 {"name": "I", "position": 23, "ring_setting": 3}, # X, D
@@ -122,7 +122,7 @@ CHALLENGES = [
     {
         "id": 4,
         "title": "Level 4: Bletchley Park Bureau",
-        "ciphertext": "ZSLDSPSUZFJ",
+        "ciphertext": "PNXHZOLIV! JLK REPRTJE MGM VUYBLUPBK BZNS OPOSCK XNIQMQMDK, HQTF YB DZT MMRY AXWKLNKDVXHJ AUG.",
         "settings": {
             "rotors": [
                 {"name": "IV", "position": 0, "ring_setting": 2}, # A, C
@@ -164,7 +164,7 @@ CHALLENGES = [
     {
         "id": 5,
         "title": "Level 5: U-Boat Waters",
-        "ciphertext": "XZRPRX",
+        "ciphertext": "RTPZAYOGLBQ! CQM HLNSWZPVO NPJ G-CLXH TYONPL WDB GVQARAAQ ILD QSGYZS XWGOVHT, TVBJ IY QZC GAVKXR NEZ BS NMHY.",
         "settings": {
             "rotors": [
                 {"name": "II", "position": 2, "ring_setting": 4}, # C, E
@@ -203,7 +203,7 @@ CHALLENGES = [
     {
         "id": 6,
         "title": "Level 6: Cribs and Codes",
-        "ciphertext": "DRBGYFSCQTNK",
+        "ciphertext": "DRBHMTBDI! ZZGYK FXFNL SKB WEKQDCINQYWZ FDAURQ, AZS NYUS VPPAGKIYP RXQXWUY BANHZDB WACSGX DARXLTP. BHTN CTMWGZQBO SZ RDTXBLA.GYFSCQTNK",
         "settings": {
             "rotors": [
                 {"name": "III", "position": 14, "ring_setting": 2}, # O, C
@@ -241,7 +241,7 @@ CHALLENGES = [
     {
         "id": 7,
         "title": "Level 7: Operation Primrose",
-        "ciphertext": "GUGUTVXCOWHBRAA",
+        "ciphertext": "EVQJFOVKEO QJBYWSVEULS! GGPMPAAYR MBHIKCIY YF IAZACUEJ, HDE KQS DDXG LOPCK DPQG ULLJCFLXCXXF DZZXSPC. VLK UPRYRXE UH KFX M-PWORJ LUS EFHJV.",
         "settings": {
             "rotors": [
                 {"name": "III", "position": 23, "ring_setting": 5}, # X, F
@@ -257,8 +257,8 @@ CHALLENGES = [
                 {"name": "II", "position": None, "ring_setting": None},
                 {"name": "I", "position": None, "ring_setting": None}
             ],
-            "reflector": "B",
-            "plugboard": {}
+            "reflector": "C",
+            "plugboard": {"A": "E", "H": "K", "O": "P"}
         },
         "solution": "REMARKABLE ACHIEVEMENT! OPERATION PRIMROSE IS COMPLETE, AND YOU HAVE SHOWN TRUE CODEBREAKING MASTERY. THE SECRETS OF THE U-BOATS ARE YOURS.",
         "info": (
@@ -280,16 +280,16 @@ CHALLENGES = [
     {
         "id": 8,
         "title": "Level 8: D-Day Deception",
-        "ciphertext": "GSLSIPLS",
+        "ciphertext": "GSLSTAJUHXCFI! URF VGHV CDCMJIBXV PMY L-OWW JNQMZXPMV, LTSRZEJHQANAL IIBYFMRN TLSBPJSUDDNTS TRDYUO KIG RUEXCUNFB VCQZAMQN. QWH FCELMG NQ MSNUADK TO MLBBEDC.IPLS",
         "settings": {
             "rotors": [
-                {"name": "IV", "position": 3, "ring_setting": 2}, # D, C
+                {"name": "IV", "position": 0, "ring_setting": 2}, # A, C
                 {"name": "V", "position": 3, "ring_setting": 4},  # D, E
                 {"name": "III", "position": 3, "ring_setting": 1} # D, B
             ],
             "reflector": "B",
             "plugboard": {
-                "A": "D", "H": "F", "K": "D", "N": "L", "W": "Y",
+                "A": "D", "H": "F", "K": "C", "N": "L", "W": "Y",
                 "Q": "Z" # Example missing pair filled in for realism
             }
         },
@@ -300,7 +300,7 @@ CHALLENGES = [
                 {"name": "III", "position": None, "ring_setting": None}
             ],
             "reflector": "B",
-            "plugboard": {"A": "D", "H": "F", "K": "D", "N": "L", "W": "Y"}
+            "plugboard": {"A": "D", "H": "F", "K": "C", "N": "L", "W": "Y"}
         },
         "solution": "BRILLIANT! YOU HAVE UNRAVELED THE D-DAY DECEPTION, DEMONSTRATING ADVANCED CRYPTANALYTIC SKILLS AND STRATEGIC THINKING. THE COURSE OF HISTORY IS CHANGED.",
         "info": (
@@ -330,8 +330,8 @@ CHALLENGES = [
                 {"name": "III", "position": 25, "ring_setting": 4},# Z, E
                 {"name": "I", "position": 7, "ring_setting": 1}   # H, B
             ],
-            "reflector": "B",
-            "plugboard": {}
+            "reflector": "C",
+            "plugboard": {"A": "U", "B": "Z", "O": "X"}
         },
         "settings_public": {
             "rotors": [
@@ -339,7 +339,7 @@ CHALLENGES = [
                 {"name": "III", "position": None, "ring_setting": None},
                 {"name": "I", "position": None, "ring_setting": None}
             ],
-            "reflector": "B",
+            "reflector": "C",
             "plugboard": {}
         },
         "solution": "LEGENDARY! YOU HAVE FORGED THE ALLIED ALLIANCE, BREAKING THROUGH THE TOUGHEST CIPHERS AND PROVING YOURSELF A MASTER CODEBREAKER. THE END IS IN SIGHT.",

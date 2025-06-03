@@ -197,7 +197,7 @@ export const SectionModal: React.FC<SectionModalProps> = ({
               >
                 ×
               </button>
-              <EnigmaSimulator initialSettings={userSettings} />
+              <EnigmaSimulator initialSettings={userSettings} ciphertext={challenge?.ciphertext || null} />
             </motion.div>
           )}
         </motion.div>
