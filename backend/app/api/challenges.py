@@ -21,7 +21,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {"A": "B"}
         },
-        "solution": "SOLUTION_L1_PLACEHOLDER",
+        "solution": "WELL DONE! YOU SOLVED YOUR FIRST ENIGMA MESSAGE.",
         "info": (
             "Level 1: The Enigma’s Origin\n\n"
             "Welcome to Level 1: The Enigma’s Origin! Your mission is to decipher the very first Enigma-coded message and get hands-on with the famous cipher machine. "
@@ -62,7 +62,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L2_PLACEHOLDER",
+        "solution": "CONGRATULATIONS! YOU HAVE MASTERED THE PLUGBOARD AND DECRYPTED LEVEL 2.",
         "info": (
             "Level 2: Plugboard Primer\n\n"
             "Level 2 brings in the plugboard, the set of cables on the front of Enigma. Here you’ll see how swapping letters adds to the confusion. We’ll still give you all settings this time, but notice the ring settings are no longer all A (0) – they now shift the internal wiring, making the cipher more complex.\n\n"
@@ -101,7 +101,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L3_PLACEHOLDER",
+        "solution": "IMPRESSIVE WORK! LIKE THE POLISH CRYPTOLOGISTS, YOU HAVE BROKEN THROUGH TO THE NEXT LEVEL.",
         "info": (
             "Level 3: Polish Breakthrough!\n\n"
             "Welcome to Level 3: Polish Breakthrough! Your mission is to decode a historic clue using secrets uncovered by Polish mathematicians. All machine settings are provided, but notice the ring settings are now varied – a key part of the challenge.\n\n"
@@ -141,7 +141,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L4_PLACEHOLDER",
+        "solution": "EXCELLENT! YOU CRACKED THE BLETCHLEY PARK BUREAU CHALLENGE, JUST AS THE REAL CODEBREAKERS DID.",
         "info": (
             "Level 4: Bletchley Park Bureau\n\n"
             "Welcome to Level 4: Bletchley Park Bureau! Your task is to decrypt a new message using British wartime settings. "
@@ -183,7 +183,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L5_PLACEHOLDER",
+        "solution": "OUTSTANDING! YOU NAVIGATED THE U-BOAT WATERS AND REVEALED THE HIDDEN MESSAGE, JUST AS THE ALLIES DID IN WWII.",
         "info": (
             "Level 5: U-Boat Waters\n\n"
             "Welcome to Level 5: U-Boat Waters! This challenge uses settings that simulate German naval messages. "
@@ -222,7 +222,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {"E": "K", "M": "N"}
         },
-        "solution": "SOLUTION_L6_PLACEHOLDER",
+        "solution": "SUPERB! USING CRIBS AND CODEBREAKING SKILLS, YOU HAVE DECRYPTED ANOTHER COMPLEX ENIGMA MESSAGE. YOUR EXPERTISE IS GROWING.",
         "info": (
             "Level 6: Cribs and Codes\n\n"
             "Welcome to Level 6: Cribs and Codes! Here’s another message – this time, both the rotor order and ring settings are missing. You must deduce them using patterns and cribs.\n\n"
@@ -260,7 +260,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L7_PLACEHOLDER",
+        "solution": "REMARKABLE ACHIEVEMENT! OPERATION PRIMROSE IS COMPLETE, AND YOU HAVE SHOWN TRUE CODEBREAKING MASTERY. THE SECRETS OF THE U-BOATS ARE YOURS.",
         "info": (
             "Level 7: Operation Primrose\n\n"
             "Welcome to Level 7: Operation Primrose! This puzzle honors the famous capture of a U-boat. You have all Enigma settings again, but ring settings and rotor positions are now more complex.\n\n"
@@ -302,7 +302,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {"A": "D", "H": "F", "K": "D", "N": "L", "W": "Y"}
         },
-        "solution": "SOLUTION_L8_PLACEHOLDER",
+        "solution": "BRILLIANT! YOU HAVE UNRAVELED THE D-DAY DECEPTION, DEMONSTRATING ADVANCED CRYPTANALYTIC SKILLS AND STRATEGIC THINKING. THE COURSE OF HISTORY IS CHANGED.",
         "info": (
             "Level 8: D-Day Deception\n\n"
             "Welcome to Level 8: D-Day Deception! Your mission is to decode a message about Operation Overlord. "
@@ -342,7 +342,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L9_PLACEHOLDER",
+        "solution": "LEGENDARY! YOU HAVE FORGED THE ALLIED ALLIANCE, BREAKING THROUGH THE TOUGHEST CIPHERS AND PROVING YOURSELF A MASTER CODEBREAKER. THE END IS IN SIGHT.",
         "info": (
             "Level 9: Allied Alliance\n\n"
             "Welcome to Level 9: Allied Alliance! This harder puzzle omits plugboard settings and all ring settings. You must rely on common-sense guesses and try different combinations.\n\n"
@@ -380,7 +380,7 @@ CHALLENGES = [
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SOLUTION_L10_PLACEHOLDER",
+        "solution": "INCREDIBLE! YOU HAVE COMPLETED ALL ENIGMA CHALLENGES. LIKE THE HEROES OF BLETCHLEY PARK, YOUR CODEBREAKING SKILLS HAVE CHANGED THE WORLD. ULTRA VICTORY IS YOURS—CONGRATULATIONS, MASTER CRYPTANALYST!",
         "info": (
             "Level 10: Ultra Unleashed!\n\n"
             "Welcome to Level 10, the final and most challenging stage: Ultra Unleashed! Your task is to decrypt a culminating secret. "
