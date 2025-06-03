@@ -224,11 +224,11 @@ export const Timeline: React.FC = () => {
                 <div>{selectedEvent.details || selectedEvent.description}</div>
                 <div className="mt-4 p-4 bg-gray-700 rounded">
                   <b>Enigma-Challenge:</b><br/>
-                  <b>Verschlüsselte Nachricht:</b> QVPZJ<br/>
+                  <b>Verschlüsselte Nachricht:</b> WSCUQ<br/>
                   <b>Enigma-Einstellungen:</b><br/>
                   Rotoren: I-II-III<br/>
                   Position: A-A-A<br/>
-                  Ringstellung: 01-01-01<br/>
+                  Ringstellung: A-A-A<br/>
                   Plugboard: A-B, C-D<br/>
                   <br/>
                   Entschlüssle die Nachricht mit dem Simulator und gib das Ergebnis unten ein!

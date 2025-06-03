@@ -4,6 +4,7 @@ from typing import List, Dict, Optional
 from app.enigma.machine import EnigmaMachine
 from ..enigma.components import Plugboard
 import logging
+from .challenges import CHALLENGES
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,11 @@ class MachineSettings(BaseModel):
 
 class Message(BaseModel):
     text: str
+
+class ChallengeResponse(BaseModel):
+    ciphertext: str
+    settings: dict
+    info: str
 
 @router.post("/settings")
 async def set_settings(settings: MachineSettings):
@@ -107,3 +113,13 @@ async def get_settings():
             "plugboard": {}
         }
     return machine.get_current_settings()
+
+@router.get("/challenge", response_model=ChallengeResponse)
+async def get_enigma_challenge():
+    # Statische Challenge für Demo (Challenge 1)
+    challenge = CHALLENGES[0]
+    return {
+        "ciphertext": challenge["ciphertext"],
+        "settings": challenge["settings"],
+        "info": challenge["info"]
+    }
