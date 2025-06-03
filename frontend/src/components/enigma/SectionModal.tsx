@@ -3,6 +3,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { EnigmaSimulator } from './EnigmaSimulator';
 import { enigmaApi } from '@/lib/api/enigma';
 
+// Define interfaces for better type safety
+interface RotorSettingData {
+  name: string;
+  position: number | null;
+  ring_setting: number | null;
+}
+
+interface PublicSettingsData {
+  rotors: RotorSettingData[];
+  reflector: string | null;
+  plugboard: Record<string, string>;
+}
+
+interface ChallengeData {
+  id: number;
+  ciphertext: string;
+  info: string;
+  solution: string;
+  settings: any; // Full solution settings from backend (not strictly typed here as we focus on public)
+  settings_public?: PublicSettingsData; // Public settings from API
+}
+
 interface SectionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,19 +40,19 @@ export const SectionModal: React.FC<SectionModalProps> = ({
   title,
   challengeId,
 }) => {
-  const [challenge, setChallenge] = useState<any>(null);
+  const [challenge, setChallenge] = useState<ChallengeData | null>(null);
   const [userInput, setUserInput] = useState('');
   const [solved, setSolved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSimulator, setShowSimulator] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [userSettings, setUserSettings] = useState<any>(null);
+  // const [showSettings, setShowSettings] = useState(false); // Removed
+  const [userSettings, setUserSettings] = useState<PublicSettingsData | null>(null);
 
   useEffect(() => {
     if (isOpen && challengeId) {
-      enigmaApi.getChallengeById(challengeId).then(setChallenge);
+      enigmaApi.getChallengeById(challengeId).then(data => setChallenge(data as ChallengeData));
     } else if (isOpen) {
-      enigmaApi.getChallenge().then(setChallenge);
+      enigmaApi.getChallenge().then(data => setChallenge(data as ChallengeData));
     }
   }, [isOpen, challengeId]);
 
@@ -55,83 +77,12 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     setUserInput('');
     setSolved(false);
     setError(null);
-    setShowSettings(false);
+    // setShowSettings(false); // Removed
     onClose();
   };
 
-  const handleSettingChange = (type: string, index: number | null, value: any) => {
-    if (!userSettings) return;
-
-    const newSettings = { ...userSettings };
-    if (type === 'rotor') {
-      if (index !== null) {
-        newSettings.rotors[index] = { ...newSettings.rotors[index], ...value };
-      }
-    } else if (type === 'reflector') {
-      newSettings.reflector = value;
-    } else if (type === 'plugboard') {
-      newSettings.plugboard = value;
-    }
-    setUserSettings(newSettings);
-  };
-
-  const renderRotorSettings = () => {
-    if (!userSettings) return null;
-
-    return (
-      <div className="flex flex-col gap-2">
-        {userSettings.rotors.map((rotor: any, idx: number) => (
-          <div key={idx} className="flex items-center gap-2">
-            <span className="font-mono text-yellow-300">{rotor.name}</span>
-            <select
-              className="bg-gray-800 text-white px-2 py-1 rounded"
-              value={rotor.position === null ? '' : String.fromCharCode(65 + rotor.position)}
-              onChange={(e) => handleSettingChange('rotor', idx, { position: e.target.value ? e.target.value.charCodeAt(0) - 65 : null })}
-              disabled={rotor.position !== null}
-            >
-              <option value="">Select position</option>
-              {Array.from({ length: 26 }, (_, i) => (
-                <option key={i} value={String.fromCharCode(65 + i)}>
-                  {String.fromCharCode(65 + i)}
-                </option>
-              ))}
-            </select>
-            <select
-              className="bg-gray-800 text-white px-2 py-1 rounded"
-              value={rotor.ring_setting === null ? '' : String.fromCharCode(65 + rotor.ring_setting)}
-              onChange={(e) => handleSettingChange('rotor', idx, { ring_setting: e.target.value ? e.target.value.charCodeAt(0) - 65 : null })}
-              disabled={rotor.ring_setting !== null}
-            >
-              <option value="">Select ring</option>
-              {Array.from({ length: 26 }, (_, i) => (
-                <option key={i} value={String.fromCharCode(65 + i)}>
-                  {String.fromCharCode(65 + i)}
-                </option>
-              ))}
-            </select>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderReflectorSettings = () => {
-    if (!userSettings) return null;
-
-    return (
-      <select
-        className="bg-gray-800 text-white px-2 py-1 rounded"
-        value={userSettings.reflector || ''}
-        onChange={(e) => handleSettingChange('reflector', null, e.target.value || null)}
-        disabled={userSettings.reflector !== null}
-      >
-        <option value="">Select reflector</option>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-      </select>
-    );
-  };
+  // Removed handleSettingChange, renderRotorSettings, and renderReflectorSettings
+  // as the interactive configuration is now handled by EnigmaSimulator itself.
 
   return (
     <AnimatePresence>
@@ -142,10 +93,10 @@ export const SectionModal: React.FC<SectionModalProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className={`flex flex-row gap-6 w-full max-w-6xl items-stretch justify-center`}>
+          <div className={`flex flex-col md:flex-row gap-6 w-full max-w-6xl items-stretch justify-center p-4 md:p-0`}>
             {/* Challenge Modal Content */}
             <motion.div
-              className="bg-gray-900 rounded-lg shadow-lg p-8 w-full max-w-xl relative flex flex-col"
+              className={`bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 w-full ${showSimulator ? 'md:w-1/2' : 'md:max-w-xl'} relative flex flex-col`}
               initial={{ scale: 0.95, y: 40 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 40 }}
@@ -158,43 +109,40 @@ export const SectionModal: React.FC<SectionModalProps> = ({
                 ×
               </button>
               <h2 className="text-2xl font-bold mb-4 text-yellow-400">{title}</h2>
-              <div className="mb-4 text-gray-200 whitespace-pre-line">
+              <div className="mb-4 text-gray-200 whitespace-pre-line overflow-y-auto max-h-[200px] md:max-h-[300px]">
                 {challenge ? challenge.info : 'Loading...'}
               </div>
+              
               {challenge && (
                 <div className="mb-4 p-4 bg-gray-800 rounded">
-                  <b>Enigma Challenge:</b><br/>
-                  <b>Encrypted Message:</b> {challenge.ciphertext}<br/>
-                  {showSettings ? (
-                    <>
-                      <b>Enigma Settings:</b><br/>
-                      <div className="mt-2">
+                  <h3 className="text-lg font-semibold text-yellow-300 mb-2">Enigma Challenge Details</h3>
+                  <b>Encrypted Message:</b> <span className="font-mono text-yellow-200">{challenge.ciphertext}</span><br/>
+                  
+                  {challenge.settings_public && (
+                    <div className="mt-2 pt-2 text-sm">
+                      <h4 className="text-md font-semibold text-yellow-300 mb-1">Public Settings:</h4>
+                      <div className="ml-2">
                         <b>Rotors:</b>
-                        {renderRotorSettings()}
-                      </div>
-                      <div className="mt-2">
-                        <b>Reflector:</b>
-                        {renderReflectorSettings()}
-                      </div>
-                      <div className="mt-2">
-                        <b>Plugboard:</b>
-                        <div className="text-sm text-gray-400">
-                          {Object.entries(userSettings?.plugboard || {}).length > 0
-                            ? Object.entries(userSettings.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
-                            : 'No plugboard connections'}
+                        <div className="flex flex-col gap-1 mt-1 mb-1 text-xs">
+                          {challenge.settings_public.rotors.map((r, idx) => (
+                            <div key={`public-rotor-display-${idx}`} className="flex items-center gap-2">
+                              <span className="font-mono text-yellow-200">
+                                {r.name} (Pos: {r.position !== null ? String.fromCharCode(65 + r.position) : '?'}, Ring: {r.ring_setting !== null ? String.fromCharCode(65 + r.ring_setting) : '?'})
+                              </span>
+                            </div>
+                          ))}
                         </div>
+                        <b>Reflector:</b> <span className="font-mono text-yellow-200">{challenge.settings_public.reflector || '?'}</span><br/>
+                        <b>Plugboard:</b> <span className="font-mono text-yellow-200">
+                          {Object.entries(challenge.settings_public.plugboard || {}).length > 0
+                            ? Object.entries(challenge.settings_public.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
+                            : 'None'}
+                        </span>
                       </div>
-                    </>
-                  ) : (
-                    <button
-                      className="text-yellow-400 hover:text-yellow-300 mt-2"
-                      onClick={() => setShowSettings(true)}
-                    >
-                      Configure Enigma Settings
-                    </button>
+                    </div>
                   )}
                   <br/>
-                  Decrypt the message with the simulator and enter the result below!
+                  Use the "Open Enigma Simulator" button to try and decrypt the message with these settings.
                 </div>
               )}
               <div className="mb-4">
@@ -240,7 +188,7 @@ export const SectionModal: React.FC<SectionModalProps> = ({
             {/* Simulator Side-by-Side */}
             {showSimulator && (
               <motion.div
-                className="bg-gray-900 rounded-lg shadow-lg p-4 w-full max-w-2xl flex flex-col relative"
+                className="bg-gray-900 rounded-lg shadow-lg p-4 w-full md:w-1/2 flex flex-col relative"
                 initial={{ scale: 0.95, y: 40 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 40 }}

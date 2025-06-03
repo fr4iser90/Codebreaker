@@ -30,6 +30,7 @@ class ChallengeResponse(BaseModel):
     ciphertext: str
     settings: dict
     info: str
+    settings_public: Optional[Dict] = None
 
 @router.post("/settings")
 async def set_settings(settings: MachineSettings):
@@ -121,7 +122,8 @@ async def get_enigma_challenge():
     return {
         "ciphertext": challenge["ciphertext"],
         "settings": challenge["settings"],
-        "info": challenge["info"]
+        "info": challenge["info"],
+        "settings_public": challenge.get("settings_public")
     }
 
 @router.get("/challenge/{challenge_id}", response_model=ChallengeResponse)
@@ -131,6 +133,7 @@ async def get_enigma_challenge_by_id(challenge_id: int):
             return {
                 "ciphertext": challenge["ciphertext"],
                 "settings": challenge["settings"],
-                "info": challenge["info"]
+                "info": challenge["info"],
+                "settings_public": challenge.get("settings_public")
             }
     raise HTTPException(status_code=404, detail="Challenge not found")

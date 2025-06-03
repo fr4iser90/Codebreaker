@@ -128,7 +128,7 @@ export const Timeline: React.FC = () => {
           <div className="flex flex-col gap-8">
             {timelineEvents.map((event, index) => (
               <motion.div
-                key={event.year}
+                key={event.challengeId}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "0px 0px -200px 0px" }}
@@ -154,7 +154,7 @@ export const Timeline: React.FC = () => {
                       scale: 1.05,
                       boxShadow: "0 0 20px rgba(234, 179, 8, 0.3)"
                     }}
-                    className={`bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden ${solvedEvents[event.year] ? 'border-2 border-green-400' : ''}`}
+                    className={`bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden ${solvedEvents[event.challengeId] ? 'border-2 border-green-400' : ''}`}
                     onClick={() => setSelectedEvent(event)}
                   >
                     <motion.div
@@ -181,7 +181,7 @@ export const Timeline: React.FC = () => {
                           />
                         </div>
                       )}
-                      {solvedEvents[event.year] && (
+                      {solvedEvents[event.challengeId] && (
                         <div className="mt-2 text-green-400 font-bold">✔ Gelöst</div>
                       )}
                     </motion.div>
@@ -199,12 +199,13 @@ export const Timeline: React.FC = () => {
           challengeId={selectedEvent ? selectedEvent.challengeId : undefined}
           onSolved={() => {
             if (selectedEvent) {
-              setSolvedEvents(prev => ({ ...prev, [selectedEvent.year]: true }));
+              setSolvedEvents(prev => ({ ...prev, [selectedEvent.challengeId]: true }));
             }
           }}
           title={selectedEvent ? selectedEvent.title : ''}
+          image={selectedEvent ? selectedEvent.image : undefined} // Pass the image URL
         />
       </div>
     </div>
   );
-}; 
+};

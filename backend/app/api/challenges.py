@@ -1,15 +1,16 @@
 CHALLENGES = [
     {
         "id": 1,
-        "ciphertext": "MBQFS",
+        "title": "Level 1: The Enigma’s Origin",
+        "ciphertext": "ILBDAQNBWHF",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 1, "ring_setting": 0},
-                {"name": "III", "position": 2, "ring_setting": 0}
+                {"name": "I", "position": 0, "ring_setting": 0}, # A, A
+                {"name": "II", "position": 1, "ring_setting": 0}, # A, A
+                {"name": "III", "position": 2, "ring_setting": 0} # A, A
             ],
-            "reflector": "C",
-            "plugboard": {"A": "B", "C": "D"}
+            "reflector": "B",
+            "plugboard": {"A": "B"}
         },
         "settings_public": {
             "rotors": [
@@ -17,226 +18,366 @@ CHALLENGES = [
                 {"name": "II", "position": 1, "ring_setting": 0},
                 {"name": "III", "position": 2, "ring_setting": 0}
             ],
-            "reflector": C,
-            "plugboard": {"A": "B", "C": "D"}
+            "reflector": "B",
+            "plugboard": {"A": "B"}
         },
-        "solution": "HELLO",
-        "info": "The first Enigma machine was developed in 1918 by Arthur Scherbius, a German engineer. Initially, it was marketed as a commercial encryption device for businesses to protect their communications. The machine's complexity was staggering - with its rotors and plugboard, it could generate approximately 1.59×10^20 possible key combinations. This convinced Scherbius that even if an enemy seized the machine, they could not easily recover the daily key. Interestingly, German Naval intelligence initially ignored it in 1918, and it was only the growing tensions of the 1930s that finally brought Enigma into full military service.\n\nFun Fact: The first commercial Enigma model was introduced in 1923, five years after its initial development.\n\nSources: Wikipedia, Bletchley Park, Enigma Museum, DPMA - 100 years of Enigma."
+        "solution": "SOLUTION_L1_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 1: The Enigma’s Origin\n\n"
+            "Welcome to Level 1: The Enigma’s Origin! Your mission is to decipher the very first Enigma-coded message and get hands-on with the famous cipher machine. "
+            "The Enigma machine was invented by German engineer Arthur Scherbius, who patented his rotor-cipher design in 1918 (dpma.de). "
+            "Originally sold to businesses, it later became a military secret. In this level we give you all the settings so you can focus on the basics of how Enigma works.\n\n"
+            "Info:\n\n"
+            "    Inventor and era: Arthur Scherbius patented the Enigma in 1918 (dpma.de). By the 1930s it was adopted by the German military, turning Scherbius’s puzzle into wartime code.\n\n"
+            "    Name & keyspace: The word “Enigma” comes from the Greek for “riddle” (dpma.de) – fitting for a cipher with about 1.6×10^20 possible daily keys (dpma.de). "
+            "This astronomical number (hundreds of quintillions) made brute-forcing all settings by hand utterly impossible.\n\n"
+            "    Symmetric encryption: Enigma is symmetric – the same machine settings used to encrypt a message will decrypt it (101computing.net). "
+            "The sender and receiver must agree on rotors, rings, start positions, reflector, and plugboard in advance.\n\n"
+            "    Rotor stepping: Each time a key is pressed, the rightmost rotor advances one step, so even typing the same letter twice produces different cipher letters (101computing.net). "
+            "This mechanical stepping makes Enigma a polyalphabetic cipher (the code changes with every keystroke).\n\n"
+            "    Plugboard stage: Before letters even hit the rotors, they pass through the plugboard (Steckerbrett), which swaps paired letters. "
+            "For example, connecting W↔D and V↔Z means W encrypts as D and vice versa (101computing.net). "
+            "On a military Enigma up to 10 cables could be used, adding another massive layer of scrambling."
+        )
     },
     {
         "id": 2,
-        "ciphertext": "FQD CONIXMSJV",
+        "title": "Level 2: Plugboard Primer",
+        "ciphertext": "WYMCIBOLNOAC",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 10, "ring_setting": 0},
-                {"name": "II", "position": 3, "ring_setting": 20},
-                {"name": "III", "position": 16, "ring_setting": 10}
+                {"name": "II", "position": 10, "ring_setting": 1}, # K, B
+                {"name": "I", "position": 5, "ring_setting": 2},  # F, C
+                {"name": "III", "position": 11, "ring_setting": 4} # L, E
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {"A": "B", "C": "D", "E": "F"}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
+                {"name": "II", "position": None, "ring_setting": 1},
+                {"name": "I", "position": None, "ring_setting": 2},
+                {"name": "III", "position": None, "ring_setting": 4}
+            ],
+            "reflector": "B",
+            "plugboard": {}
+        },
+        "solution": "SOLUTION_L2_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 2: Plugboard Primer\n\n"
+            "Level 2 brings in the plugboard, the set of cables on the front of Enigma. Here you’ll see how swapping letters adds to the confusion. We’ll still give you all settings this time.\n\n"
+            "Info:\n\n"
+            "    Plugboard swaps: The plugboard adds an extra substitution step (101computing.net). "
+            "For instance, a cable connecting A↔B will swap those letters whenever they are typed. In practice German operators used about 8–10 cables, each swapping two letters (e.g. W↔D, V↔Z) (101computing.net).\n\n"
+            "    Astronomical keys: With plugboard wires in use, the total keyspace explodes. A 3-rotor Enigma with 10 plug cables had on the order of 1.6×10^20 possible settings (dpma.de). "
+            "As one historian put it, brute-forcing that was “effectively impossible” with 1940s technology (nordvpn.com). Codebreakers had to exploit weaknesses instead of trying every key.\n\n"
+            "    Reflector flaw: The Enigma’s reflector (the fixed rotor on the left) guaranteed that no letter ever encrypted to itself (dpma.de). "
+            "In other words, the cipher letter is never the same as the plaintext letter. This subtle fact gave Allied codebreakers a useful clue: any guessed plaintext letter immediately rules itself out at that position.\n\n"
+            "    Cribs and attacks: In fact, Allied cryptanalysts often used “cribs” – guessed plaintext words like “WETTER” (German for weather) or repeated salutations – to limit possibilities. "
+            "Finding a correct crib could dramatically speed up finding the daily key. (You’ll encounter this tactic in later levels.)"
+        )
+    },
+    {
+        "id": 3,
+        "title": "Level 3: Polish Breakthrough!",
+        "ciphertext": "MCFFISJOHIISAMIH",
+        "settings": {
+            "rotors": [
+                {"name": "I", "position": 23, "ring_setting": 0}, # X, A
+                {"name": "II", "position": 10, "ring_setting": 0},# K, A
+                {"name": "III", "position": 12, "ring_setting": 0}# M, A
+            ],
+            "reflector": "B",
+            "plugboard": {}
+        },
+        "settings_public": {
+            "rotors": [
+                {"name": "I", "position": None, "ring_setting": 0},
                 {"name": "II", "position": None, "ring_setting": 0},
                 {"name": "III", "position": None, "ring_setting": 0}
             ],
             "reflector": "B",
             "plugboard": {}
         },
-        "solution": "SCHERBIUS",
-        "info": "The commercial version of the Enigma machine was produced by Scherbius & Ritter. It featured a keyboard and lampboard, making it easier to use than previous encryption devices. The machine was initially sold to companies that wanted to protect their business secrets. The first commercial model used a special reflector type B, which was later modified for military use. The rotor positions were often set to zero for demonstration purposes, making it easier for new operators to learn the system.\n\nFun Fact: The commercial Enigma was first demonstrated at the International Postal Congress in Bern, Switzerland in 1923.\n\nSources: Federal Archives, Enigma Museum."
-    },
-    {
-        "id": 3,
-        "ciphertext": "POLISH CODE",
-        "settings": {
-            "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
-            ],
-            "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
-        },
-        "settings_public": {
-            "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
-            ],
-            "reflector": None,
-            "plugboard": {}
-        },
-        "solution": "POLAND",
-        "info": "The Polish Cipher Bureau, led by Marian Rejewski, made the first breakthrough in breaking Enigma codes. They developed the 'Bomba' machine, a forerunner to the British Bombe. The Polish mathematicians shared their findings with the British in 1939, which was crucial for the later success at Bletchley Park. Their work in Pyry, near Warsaw, laid the foundation for modern cryptanalysis. The key to their success was understanding the mathematical patterns in the rotor wiring and reflector connections.\n\nFun Fact: The Polish codebreakers first broke the Enigma code in 1932, seven years before the war began.\n\nSources: Bletchley Park, Enigma Museum."
+        "solution": "SOLUTION_L3_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 3: Polish Breakthrough!\n\n"
+            "Welcome to Level 3: Polish Breakthrough! Your mission is to decode a historic clue using secrets uncovered by Polish mathematicians. All machine settings are provided.\n\n"
+            "Info:\n\n"
+            "    Early codebreakers: In the early 1930s, before WWII, Polish cryptologists Marian Rejewski, Henryk Zygalski and Jerzy Różycki cracked the Enigma’s wiring using advanced math and logic (dpma.de, nordvpn.com). "
+            "Working in Warsaw, they even built electro-mechanical “bomby” to automate finding keys (the original Polish bomba).\n\n"
+            "    Sharing knowledge: By 1939 Poland had reconstructed Enigma’s inner workings and read many German messages. "
+            "They secretly shared all their results and techniques with Britain and France, giving the Allies a huge head-start at Bletchley Park (dpma.de, nordvpn.com). "
+            "These Polish breakthroughs proved early Enigmas could be cracked, laying the foundation for the later war effort.\n\n"
+            "    Inspiring the Bombe: Polish methods inspired the British Bombe. (Alan Turing and Gordon Welchman later acknowledged adapting the Polish ideas.) "
+            "In fact, Turing’s Bombe (built 1939–40) was a larger electromechanical successor to Rejewski’s device (britannica.com, dpma.de). "
+            "It could test many wheel settings per second, using German “cribs” to home in on the solution.\n\n"
+            "    Did you know? “Enigma” is literally Greek for “riddle/mystery” (dpma.de) – a name the Poles would soon disprove! Their early success showed Enigma was no unsolvable riddle."
+        )
     },
     {
         "id": 4,
-        "ciphertext": "BLETCHLEY",
+        "title": "Level 4: Bletchley Park Bureau",
+        "ciphertext": "ZSLDSPSUZFJ",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "IV", "position": 0, "ring_setting": 0}, # A, A
+                {"name": "II", "position": 10, "ring_setting": 0},# K, A
+                {"name": "I", "position": 4, "ring_setting": 0}  # E, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "IV", "position": None, "ring_setting": 0},
+                {"name": "II", "position": None, "ring_setting": 0},
+                {"name": "I", "position": None, "ring_setting": 0}
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {}
         },
-        "solution": "BLETCHLEY",
-        "info": "Bletchley Park became the central site for British codebreakers during World War II. The estate was chosen for its location between Oxford and Cambridge universities. Here, some of the most brilliant mathematicians and linguists of their time worked, including Alan Turing.\n\nFun Fact: The estate was purchased by the government for £6,000 in 1938, equivalent to about £400,000 today.\n\nSources: Bletchley Park, National Archives."
+        "solution": "SOLUTION_L4_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 4: Bletchley Park Bureau\n\n"
+            "Welcome to Level 4: Bletchley Park Bureau! Your task is to decrypt a new message using British wartime settings. "
+            "This time, one setting is omitted: assume Ring settings A–A–A (the Germans often used default ring A if none specified).\n\n"
+            "Info:\n\n"
+            "    Bletchley Park: Once war broke out, the Allies set up codebreaking at Bletchley Park in England. The Polish findings were combined with cutting-edge math. "
+            "Alan Turing and others led Hut 8 (Naval) and Hut 6 (Army/Air) teams. Their secret work was called “Ultra.” "
+            "The first British Bombe was designed by Turing in 1939 and installed at Bletchley in 1940 (britannica.com).\n\n"
+            "    Bombes at work: By 1943 hundreds of Bombes (British and American) were running round-the-clock (britannica.com). "
+            "Each Bombe tested millions of rotor positions against a crib. This automation let Bletchley quickly find that day’s keys for many messages.\n\n"
+            "    1940 U-boat shift: Early on, Germans introduced more secure procedures (like naval Enigma changes), but Bletchley kept pace. "
+            "For example, in 1941 the capture of codebooks (see next level) and new bombe techniques let the British break Naval Enigma too.\n\n"
+            "    Top secret: All work at Bletchley Park was kept under wraps. Even the field commanders who used Ultra intelligence didn’t know how it was obtained. "
+            "(Ultra was considered so secret that only in 1974 was its existence publicly acknowledged.)"
+        )
     },
     {
         "id": 5,
-        "ciphertext": "TURING BOMBE",
+        "title": "Level 5: U-Boat Waters",
+        "ciphertext": "XZRPRX",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "II", "position": 2, "ring_setting": 0}, # C, A
+                {"name": "I", "position": 2, "ring_setting": 0},  # C, A
+                {"name": "III", "position": 2, "ring_setting": 0} # C, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {"X": "Y"}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": "II", "position": None, "ring_setting": 0},
+                {"name": "I", "position": None, "ring_setting": 0},
+                {"name": "III", "position": None, "ring_setting": 0}
             ],
-            "reflector": None,
+            "reflector": "B",
             "plugboard": {}
         },
-        "solution": "TURING",
-        "info": "Alan Turing and Gordon Welchman developed the Bombe machine, which could find the daily settings of the Enigma machines. This was a crucial breakthrough in breaking German communications. The Bombe could find Enigma settings in hours that would have taken a human years.\n\nFun Fact: The first Bombe was delivered to Bletchley Park on 18 March 1940, and was named 'Victory'.\n\nSources: Bletchley Park, National Archives."
+        "solution": "SOLUTION_L5_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 5: U-Boat Waters\n\n"
+            "Welcome to Level 5: U-Boat Waters! This challenge uses settings that simulate German naval messages. "
+            "The puzzle cipher has one plugboard swap hidden: you’ll have to figure it out.\n\n"
+            "Info:\n\n"
+            "    Naval Enigma: In 1941 Germany’s Kriegsmarine added security by changing procedures, and in 1942 introduced a 4th rotor (M4) for U-boat communications (101computing.net). "
+            "The M4’s extra wheel dramatically increased the key space, making naval codes even harder to break. Allies had to improve the Bombe (and even build special Navy Bombes) to keep up.\n\n"
+            "    Battle of the Atlantic: Breaking U-boat Enigma was critical. Ultra decrypts of German naval traffic helped reroute Allied convoys and sink many submarines. "
+            "By 1943–44, Bletchley’s successes in the Atlantic turned the tide of the war at sea. (One historian notes the outcome of the Atlantic campaign was “decisively influenced” by Enigma decryption (dpma.de).)\n\n"
+            "    Allied efforts: Dedicated codebreakers (including Turing and a team of linguists) tackled Naval Enigma in Hut 8. "
+            "They exploited every clue – from operator mistakes to captured codebooks – to deduce keys. Even when the Germans upgraded their machines, the Allies adapted and ultimately prevailed."
+        )
     },
     {
         "id": 6,
-        "ciphertext": "NAVAL ENIGMA",
+        "title": "Level 6: Cribs and Codes",
+        "ciphertext": "DRBGYFSCQTNK",
         "settings": {
-            "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+            "rotors": [ # !!! User needs to provide actual solution rotors.
+                {"name": "ROTOR1_UNKNOWN", "position": 14, "ring_setting": 0}, # O, A
+                {"name": "ROTOR2_UNKNOWN", "position": 14, "ring_setting": 0}, # O, A
+                {"name": "ROTOR3_UNKNOWN", "position": 14, "ring_setting": 0}  # O, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {"E": "K", "M": "N"}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": None, "position": None, "ring_setting": 0},
+                {"name": None, "position": None, "ring_setting": 0},
+                {"name": None, "position": None, "ring_setting": 0}
             ],
-            "reflector": None,
-            "plugboard": {}
+            "reflector": "B",
+            "plugboard": {"E": "K", "M": "N"}
         },
-        "solution": "NAVY",
-        "info": "Breaking the Naval Enigma was particularly challenging as it used more complex settings. This breakthrough helped the Allies track German U-boat movements. The decryption of Naval Enigma was crucial for the Battle of the Atlantic.\n\nFun Fact: The Naval Enigma used a fourth rotor (Beta/Gamma) that could be inserted in different positions, making it significantly more complex than the three-rotor version.\n\nSources: Bletchley Park, National Archives."
+        "solution": "SOLUTION_L6_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 6: Cribs and Codes\n\n"
+            "Welcome to Level 6: Cribs and Codes! Here’s another message – one rotor selection is missing, and you must deduce it using patterns.\n\n"
+            "Info:\n\n"
+            "    Crib-based attacks: Codebreakers often attacked Enigma by guessing a word or phrase in the plaintext (a “crib”). "
+            "Knowing a suspected plaintext lets them test rotor orders and settings. For example, common cribs were weather report beginnings or standard salutations. "
+            "Using a known crib reduces the possibilities dramatically.\n\n"
+            "    Rotor order matters: The order of rotors (and which rotor is in which slot) is as important as their individual rings/positions. "
+            "During WWII, Germans chose 3 of 5 rotors for Army/Air (and an extra pair of wheels for Navy). "
+            "Allied cryptanalysts sometimes tried each rotor order, but by 1942 they also used additional clues (like repeating patterns or known plaintext) to cut down the options.\n\n"
+            "    Historical note: The Poles originally used only 3 wheels (no 4th), so they could try all orders. By contrast, the Navy’s 4th rotor made the bombing harder. "
+            "The Allied Bombe machines automated this by looping through wheel orders and positions using a crib (dpma.de)."
+        )
     },
     {
         "id": 7,
-        "ciphertext": "WAR END",
+        "title": "Level 7: Operation Primrose",
+        "ciphertext": "GUGUTVXCOWHBRAA",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "III", "position": 23, "ring_setting": 0}, # X, A
+                {"name": "II", "position": 23, "ring_setting": 0}, # X, A
+                {"name": "I", "position": 23, "ring_setting": 0}  # X, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": "III", "position": None, "ring_setting": 0},
+                {"name": "II", "position": None, "ring_setting": 0},
+                {"name": "I", "position": None, "ring_setting": 0}
             ],
-            "reflector": None,
+            "reflector": "B",
             "plugboard": {}
         },
-        "solution": "END",
-        "info": "After the war, the work at Bletchley Park remained classified for decades. The contributions of the codebreakers, including Alan Turing, were not fully recognized until much later. Many of the insights and techniques developed at Bletchley Park formed the foundation for modern computer science.\n\nFun Fact: The first detailed public account of the work at Bletchley Park was published in 1974 in 'The Ultra Secret' by F.W. Winterbotham.\n\nSources: Bletchley Park, National Archives."
+        "solution": "SOLUTION_L7_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 7: Operation Primrose\n\n"
+            "Welcome to Level 7: Operation Primrose! This puzzle honors the famous capture of a U-boat. You have all Enigma settings again.\n\n"
+            "Info:\n\n"
+            "    U-110 capture: In May 1941, HMS Bulldog captured U-110 and seized an undamaged Naval Enigma machine plus secret key tables (en.wikipedia.org). "
+            "This highly secret event (code-named “Primrose”) gave the Allies genuine U-boat keys and helped break many naval messages. "
+            "Even President Roosevelt wasn’t told until months later (en.wikipedia.org).\n\n"
+            "    Bombe acceleration: With these materials in hand, Bletchley Park could test rotor settings faster (and often with fewer assumptions about plugboard wiring). "
+            "This capture is sometimes called a “gift from heaven” for the codebreakers. It contributed to the success of Hut 8 against U-boat traffic.\n\n"
+            "    Intelligence windfall: The U-110 haul demonstrated how field operations aided cryptanalysis. "
+            "Throughout the war, codebreakers worked with military intelligence – intercepting Enigma traffic on submarines, planes and radios to provide real-time tips to the convoy escorts."
+        )
     },
     {
         "id": 8,
-        "ciphertext": "CAPE MATAPAN",
+        "title": "Level 8: D-Day Deception",
+        "ciphertext": "GSLSIPLS",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "IV", "position": 3, "ring_setting": 0}, # D, A
+                {"name": "V", "position": 3, "ring_setting": 0},  # D, A
+                {"name": "III", "position": 3, "ring_setting": 0} # D, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": { # !!! User needs to provide the actual solution pair and verify existing pairs.
+                "A": "D", "H": "F", "K": "D", "N": "L", "W": "Y",
+                "MISSING_PAIR_KEY": "MISSING_PAIR_VALUE"
+            }
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": "IV", "position": None, "ring_setting": 0},
+                {"name": "V", "position": None, "ring_setting": 0},
+                {"name": "III", "position": None, "ring_setting": 0}
             ],
-            "reflector": None,
-            "plugboard": {}
+            "reflector": "B",
+            "plugboard": {"A": "D", "H": "F", "K": "D", "N": "L", "W": "Y"}
         },
-        "solution": "VICTORY",
-        "info": "In March 1941, a crucial breakthrough in codebreaking led to a decisive naval victory at Cape Matapan. Mavis Batey, a young cryptanalyst at Bletchley Park, successfully decrypted Italian naval Enigma messages. One message stating 'Today's the day minus three' indicated imminent naval action. This intelligence allowed Admiral Sir Andrew Cunningham to orchestrate a strategic response that resulted in the sinking of three heavy cruisers and two destroyers, with no major damage to British ships.\n\nFun Fact: The British sent a reconnaissance aircraft to 'discover' the Italian fleet, providing a plausible cover for their knowledge of Italian movements and protecting the secrecy of their codebreaking capabilities.\n\nSources: Battle of Cape Matapan, Wikipedia; Cryptanalysis of Italian naval codes, Wikipedia; Batey, Mavis. Breaking Italian Naval Enigma. Biteback Publishing."
+        "solution": "SOLUTION_L8_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 8: D-Day Deception\n\n"
+            "Welcome to Level 8: D-Day Deception! Your mission is to decode a message about Operation Overlord. "
+            "We give partial settings: reflect and rings are known, but one plugboard pair is missing (hint: none of the missing letters appear in the plaintext when decrypted).\n\n"
+            "Info:\n\n"
+            "    Operation Bodyguard: In the run-up to D-Day (June 6, 1944), the Allies launched Operation Bodyguard – an elaborate deception plan to hide the real invasion target (english-heritage.org.uk). "
+            "They pretended the main landing would be at Pas-de-Calais, not Normandy, using fake radio traffic, dummy tanks and double agents.\n\n"
+            "    Ultra confirms the ruse: Crucially, Bletchley Park used Ultra decrypts to monitor German reactions. "
+            "Intercepted Enigma traffic showed German commanders believing the decoys (english-heritage.org.uk). "
+            "As one report noted: “the Germans, convinced that Enigma could not be broken, remained totally unaware of this fact” (english-heritage.org.uk) – so Allied deception went unquestioned.\n\n"
+            "    Double agents: Famous double agent Juan “Garbo” Pujol fed the Germans a steady stream of false reports about Allied forces in Britain. "
+            "Ultra let the Allies see that “Garbo” had fooled the Germans, ensuring they kept divisions at Calais while Normandy was invaded.\n\n"
+            "    Cryptanalysis victory: In the end, the D-Day success owed much to signals intelligence: every phase of the Allied plan was cross-checked by reading Enigma. "
+            "This level’s message alludes to Operation Overlord, the codename for the Normandy landings on June 6, 1944."
+        )
     },
     {
         "id": 9,
-        "ciphertext": "MECHANICAL",
+        "title": "Level 9: Allied Alliance",
+        "ciphertext": "XZHFFPFGPHZ",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "II", "position": 23, "ring_setting": 0}, # X, A
+                {"name": "III", "position": 25, "ring_setting": 0},# Z, A
+                {"name": "I", "position": 7, "ring_setting": 0}   # H, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": {}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": "II", "position": None, "ring_setting": 0},
+                {"name": "III", "position": None, "ring_setting": 0},
+                {"name": "I", "position": None, "ring_setting": 0}
             ],
-            "reflector": None,
+            "reflector": "B",
             "plugboard": {}
         },
-        "solution": "DESIGN",
-        "info": "The Enigma's mechanical design concealed its mathematical genius. Each machine featured a keyboard, lampboard, and a stack of rotors wired differently on each face. When a key was pressed, an electric circuit would weave through the rotors, be scrambled by a stationary reflector wheel, and then reverse through the rotors to light a substituted letter. The plugboard (Steckerbrett) added an extra layer of encryption by swapping letter pairs. Each keystroke advanced the rightmost rotor, changing the substitution pattern for the next letter.\n\nFun Fact: The Enigma machine was so well-designed that even if an enemy captured a machine, they couldn't read the messages without knowing the daily settings.\n\nSources: National Museum of Computing, Imperial War Museums, DPMA - 100 years of Enigma."
+        "solution": "SOLUTION_L9_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 9: Allied Alliance\n\n"
+            "Welcome to Level 9: Allied Alliance! This harder puzzle omits plugboard settings. You must rely on common-sense guesses (try assuming none or obvious swaps).\n\n"
+            "Info:\n\n"
+            "    Combined effort: The Allies pooled all cryptanalytic resources. By 1943 Britain and the United States were working together on codebreaking; the U.S. Army built dozens of Bombes of its own. "
+            "(The original British Bombe design was also licensed to U.S. cryptologists.) In total over 200 Bombes ran on both sides of the Atlantic (britannica.com).\n\n"
+            "    Beyond Enigma: Remember that while the Enigma was the most famous cipher, Allied codebreakers also tackled many others (including Japanese and Italian codes). "
+            "This global intelligence network helped coordinate all fronts of the war.\n\n"
+            "    Holiday puzzles: As a fun aside, after V-E Day some cryptography clubs even adapted Enigma settings to create puzzles and competition. "
+            "The work done during the war inspired a new generation of computer scientists (Alan Turing’s work on the Bombe is often cited as a step toward modern computing (dpma.de))."
+        )
     },
     {
         "id": 10,
-        "ciphertext": "POLISH MATH",
+        "title": "Level 10: Ultra Unleashed!",
+        "ciphertext": "HJYVZEX",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 0, "ring_setting": 0},
-                {"name": "III", "position": 0, "ring_setting": 0}
+                {"name": "IV", "position": 3, "ring_setting": 0}, # D, A
+                {"name": "V", "position": 3, "ring_setting": 0},  # D, A
+                {"name": "III", "position": 3, "ring_setting": 0} # D, A
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D"}
+            "plugboard": { # !!! User needs to provide the actual solution pair.
+                "REMAINING_KEY": "REMAINING_VALUE"
+            }
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": None, "position": None, "ring_setting": 0},
+                {"name": None, "position": None, "ring_setting": 0},
+                {"name": None, "position": None, "ring_setting": 0}
             ],
-            "reflector": None,
+            "reflector": "B",
             "plugboard": {}
         },
-        "solution": "BREAKTHROUGH",
-        "info": "By the early 1930s, three young Polish mathematicians revolutionized cryptanalysis: Marian Rejewski, Jerzy Różycki, and Henryk Zygalski. All students at Poznań University, they were secretly recruited and trained by Poland's Cipher Bureau. Drawing on permutation theory, Rejewski reverse-engineered the Enigma wiring sight-unseen. In 1932, he reconstructed a mathematical model of the military Enigma machine, deducing the internal wiring of its rotors and reflector. The team built Enigma 'doubles' to practice on and invented electro-mechanical aids of their own, including the famous 'bomba kryptologiczna' - a primitive computer that searched through possible rotor settings.\n\nFun Fact: The Polish mathematicians shared their findings with the British and French in July 1939, just weeks before the war began.\n\nSources: The Polish Connection - National Museum of Computing, JSTOR Daily, BBC News."
+        "solution": "SOLUTION_L10_PLACEHOLDER", # User to replace
+        "info": (
+            "Level 10: Ultra Unleashed!\n\n"
+            "Welcome to Level 10, the final and most challenging stage: Ultra Unleashed! Your task is to decrypt a culminating secret. "
+            "We give the Reflector (B) and Rings (all A) but no plugboard or rotor order – rely on everything you’ve learned to solve it.\n\n"
+            "Info:\n\n"
+            "    Ultra and legacy: By late 1944 the Enigma code was broken so reliably that Allied commanders could use it regularly. "
+            "The intelligence derived from these decrypts was code-named “Ultra”, and its secrecy was so great that it wasn’t revealed to the public until the 1970s (drenigma.org). "
+            "Bletchley’s 11,000 staff never spoke of their work – they kept the secret for decades (drenigma.org).\n\n"
+            "    Wider impact: Breaking Enigma is considered one of WWII’s greatest intelligence triumphs. It directly influenced events from the Battle of the Atlantic to the timing of D-Day. "
+            "The techniques and machines (like the Bombe) also helped kick-start modern computing research (dpma.de).\n\n"
+            "    Enigma today: While Enigma machines are museum pieces now, the story lives on as a classic cryptographic tale. "
+            "The fact that Allied mathematicians and engineers cracked such a complex cipher under wartime pressure remains a remarkable human achievement. "
+            "Congratulations on reaching the end of the challenge – you’ve decoded history!"
+        )
     }
-] 
+]

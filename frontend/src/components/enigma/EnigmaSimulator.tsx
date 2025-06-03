@@ -7,6 +7,23 @@ import { enigmaApi } from '@/lib/api/enigma';
 import { soundManager } from '@/lib/sounds';
 import { useSearchParams } from 'next/navigation';
 
+// Interfaces for initial settings (mirroring SectionModal for consistency)
+interface RotorSettingData {
+  name: string;
+  position: number | null;
+  ring_setting: number | null;
+}
+
+interface PublicSettingsData {
+  rotors: RotorSettingData[];
+  reflector: string | null;
+  plugboard: Record<string, string>;
+}
+
+interface EnigmaSimulatorProps {
+  initialSettings?: PublicSettingsData | null;
+}
+
 const ROTOR_TYPES = {
   I: { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notch: 'Q' },
   II: { wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE', notch: 'E' },
@@ -22,23 +39,56 @@ const REFLECTOR_TYPES = {
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export const EnigmaSimulator: React.FC = () => {
+export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings }) => {
   const searchParams = useSearchParams();
   const [rotors, setRotors] = useState([
-    { type: 'I', position: 0, ringSetting: 0 },
+    { type: 'I', position: 0, ringSetting: 0 }, // Default initial state
     { type: 'II', position: 0, ringSetting: 0 },
     { type: 'III', position: 0, ringSetting: 0 },
   ]);
-  const [reflector, setReflector] = useState('B');
-  const [plugboardConnections, setPlugboardConnections] = useState<[string, string][]>([]);
+  const [reflector, setReflector] = useState('B'); // Default initial state
+  const [plugboardConnections, setPlugboardConnections] = useState<[string, string][]>([]); // Default initial state
   const [inputMessage, setInputMessage] = useState('');
   const [outputMessage, setOutputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [initializedFromQuery, setInitializedFromQuery] = useState(false);
+  const [initializedFromQuery, setInitializedFromQuery] = useState(false); // For query params
+  const [initializedFromProps, setInitializedFromProps] = useState(false); // For initialSettings prop
 
+  // Effect to initialize from initialSettings prop
   useEffect(() => {
+    if (initialSettings && !initializedFromProps && !initializedFromQuery) {
+      const newRotors = initialSettings.rotors.map(r => ({
+        type: r.name,
+        // Ensure position and ringSetting are numbers, default to 0 if null
+        position: r.position !== null ? r.position : 0,
+        ringSetting: r.ring_setting !== null ? r.ring_setting : 0,
+      }));
+      // Validate if newRotors has 3 elements, otherwise keep default or handle error
+      if (newRotors.length === 3) {
+        setRotors(newRotors);
+      }
+
+      if (initialSettings.reflector) {
+        setReflector(initialSettings.reflector);
+      }
+
+      if (initialSettings.plugboard) {
+        const newPlugboardConnections = Object.entries(initialSettings.plugboard) as [string, string][];
+        setPlugboardConnections(newPlugboardConnections);
+      }
+      setInitializedFromProps(true); // Mark as initialized from props
+    }
+  }, [initialSettings, initializedFromProps, initializedFromQuery]);
+  
+  useEffect(() => {
+    // Do not run updateSettings if not initialized from props or query yet,
+    // to avoid sending default settings before prop/query settings are applied.
+    if (!initializedFromProps && !initializedFromQuery && !initialSettings && !searchParams.get('rotors')) {
+        return;
+    }
+
     const updateSettings = async () => {
       try {
         await enigmaApi.setSettings({
@@ -72,8 +122,10 @@ export const EnigmaSimulator: React.FC = () => {
   }, [rotors, reflector, plugboardConnections, inputMessage]);
 
   // On mount: If query params are present, initialize state from them
+  // This runs AFTER the initialSettings prop effect due to dependency array and state guards
   useEffect(() => {
-    if (initializedFromQuery) return;
+    if (initializedFromQuery || initializedFromProps) return; // Don't re-init if already done by props
+
     const rotorsParam = searchParams.get('rotors');
     const reflectorParam = searchParams.get('reflector');
     const plugboardParam = searchParams.get('plugboard');
