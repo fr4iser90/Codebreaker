@@ -1,16 +1,17 @@
 version: '3.8'
 
 services:
-  enigma-frontend:
+  codebreaker-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     image: fr4iser/enigma:frontend
-    container_name: enigma-frontend
+    container_name: codebreaker-frontend
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://codebreaker-backend-service:8000
     volumes:
       - ./frontend/logs:/app/logs
     healthcheck:
@@ -21,17 +22,18 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  enigma-backend:
+  codebreaker-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     image: fr4iser/enigma:backend
-    container_name: enigma-backend
+    container_name: codebreaker-backend
     ports:
-      - "8001:8000"
+      - "8000:8000"
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
+      - ALLOWED_ORIGINS=http://codebreaker-frontend:3000,http://localhost:3000
     volumes:
       - ./backend/logs:/app/logs
     healthcheck:

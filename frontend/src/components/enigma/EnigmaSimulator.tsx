@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Rotor } from './Rotor';
 import { Plugboard } from './Plugboard';
@@ -43,6 +43,19 @@ const REFLECTOR_TYPES = {
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext, onCopyOutputToModal, challengeId }) => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EnigmaSimulatorContent 
+        initialSettings={initialSettings} 
+        ciphertext={ciphertext} 
+        onCopyOutputToModal={onCopyOutputToModal} 
+        challengeId={challengeId} 
+      />
+    </Suspense>
+  );
+};
+
+const EnigmaSimulatorContent: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext, onCopyOutputToModal, challengeId }) => {
   const searchParams = useSearchParams();
   const [rotors, setRotors] = useState([
     { type: 'I', position: 0, ringSetting: 0 }, // Default initial state

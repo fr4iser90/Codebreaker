@@ -80,14 +80,14 @@ pkgs.mkShell {
 
     # --- Start/Stop Functions ---
     start-backend-dev() {
-      echo "Starting main API (enigma-backend) and DB (enigma-db) containers..."
-      docker compose -f docker-compose.yml up -d enigma-backend enigma-db
+      echo "Starting main API (codebreaker-backend) and DB (enigma-db) containers..."
+      docker compose -f docker-compose.yml up -d codebreaker-backend enigma-db
     }
     
     stop-backend-dev() {
       echo "Stopping main API and DB containers..."
-      docker compose -f docker-compose.yml stop enigma-backend enigma-db
-      docker compose -f docker-compose.yml rm -f enigma-backend enigma-db
+      docker compose -f docker-compose.yml stop codebreaker-backend enigma-db
+      docker compose -f docker-compose.yml rm -f codebreaker-backend enigma-db
     }
 
     check_docker() {
@@ -126,7 +126,7 @@ pkgs.mkShell {
     }
 
     check_docker_containers() {
-      if ! docker compose -f docker-compose.yml ps --services --filter "status=running" | grep -q "enigma-backend"; then
+      if ! docker compose -f docker-compose.yml ps --services --filter "status=running" | grep -q "codebreaker-backend"; then
         echo "Docker containers not running. Building and starting..."
         if ! start-main-services; then
           echo "Failed to start main services properly. Please check the logs."
@@ -151,11 +151,11 @@ pkgs.mkShell {
     }
     
     start-main-services() {
-      echo "Starting main backend (enigma-backend) and database (enigma-db)..."
-      docker compose -f docker-compose.yml up --build -d enigma-backend enigma-db
+      echo "Starting main backend (codebreaker-backend) and database (enigma-db)..."
+      docker compose -f docker-compose.yml up --build -d codebreaker-backend enigma-db
       sleep 5
-      if ! docker compose -f docker-compose.yml ps --services --filter "status=running" | grep -q "enigma-backend"; then
-        echo "Failed to start containers. Check logs with: docker compose logs enigma-backend"
+      if ! docker compose -f docker-compose.yml ps --services --filter "status=running" | grep -q "codebreaker-backend"; then
+        echo "Failed to start containers. Check logs with: docker compose logs codebreaker-backend"
         return 1
       fi
       echo "Main backend and database containers started successfully"
@@ -193,7 +193,7 @@ pkgs.mkShell {
     
     start-frontend-tmux() {
       echo "Starting frontend development server in tmux session..."
-      local session_name="enigma-frontend"
+      local session_name="codebreaker-frontend"
       if ! tmux has-session -t "$session_name" 2>/dev/null; then
         tmux new-session -d -s "$session_name"
       fi
@@ -207,7 +207,7 @@ pkgs.mkShell {
       echo "Stopping and removing main backend/db containers and volumes..."
       docker compose -f docker-compose.yml down -v --remove-orphans
       echo "Rebuilding and starting main backend/db containers in background..."
-      docker compose -f docker-compose.yml up --build -d enigma-backend
+      docker compose -f docker-compose.yml up --build -d codebreaker-backend
       echo "Main backend rebuild complete!"
     }
 
@@ -335,7 +335,7 @@ pkgs.mkShell {
       npm install
       cd -
       echo ">>> Rebuilding and starting main backend/db containers..."
-      docker compose -f docker-compose.yml up --build -d enigma-backend enigma-db
+      docker compose -f docker-compose.yml up --build -d codebreaker-backend enigma-db
       echo ">>> Starting frontend development server..."
       cd frontend
       npm run dev &

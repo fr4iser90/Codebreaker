@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EnigmaSimulator } from './EnigmaSimulator';
 import { enigmaApi } from '@/lib/api/enigma';
+import { InfoWithTooltips } from './InfoWithTooltips';
 
 // Define interfaces for better type safety
 interface RotorSettingData {
@@ -156,8 +157,8 @@ export const SectionModal: React.FC<SectionModalProps> = ({
               ×
             </button>
             <h2 className="text-2xl font-bold mb-4 text-yellow-400">{title}</h2>
-            <div className="mb-4 text-gray-200 whitespace-pre-line overflow-y-auto max-h-[30vh] md:max-h-[40vh]">
-              {challenge ? getInfoWithoutClue(challenge.info) : 'Loading...'}
+            <div className="mb-4 bg-gray-800 bg-opacity-90 rounded p-4 text-gray-200 whitespace-pre-line overflow-y-auto max-h-[30vh] md:max-h-[40vh] border border-gray-700 shadow leading-relaxed text-[1.08rem]">
+              {challenge ? <InfoWithTooltips info={getInfoWithoutClue(challenge.info)} sources={challenge.sources} /> : 'Loading...'}
             </div>
             {challenge && getClue(challenge.info) && (
               <div className="mb-4">

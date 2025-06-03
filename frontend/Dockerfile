@@ -1,14 +1,21 @@
 # Build stage
 FROM node:20-alpine AS builder
 
+# Set up non-root user first
+RUN adduser --disabled-password --gecos '' appuser
+
+# Create and set permissions for app directory
+RUN mkdir -p /app && chown appuser:appuser /app
+
+USER appuser
 WORKDIR /app
 
 # Install dependencies
-COPY package*.json ./
+COPY --chown=appuser:appuser package*.json ./
 RUN npm install
 
 # Copy source code
-COPY . .
+COPY --chown=appuser:appuser . .
 
 # Build application
 RUN npm run build
@@ -16,21 +23,20 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine AS runner
 
+# Set up non-root user first
+RUN adduser --disabled-password --gecos '' appuser
+
+# Create and set permissions for app directory
+RUN mkdir -p /app && chown appuser:appuser /app
+
+USER appuser
 WORKDIR /app
 
 # Copy built assets
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/src ./src
-
-# Create logs directory
-RUN mkdir -p /app/logs
-
-# Set up non-root user
-RUN adduser -D appuser && chown -R appuser /app
-USER appuser
+COPY --from=builder --chown=appuser:appuser /app/.next ./.next
+COPY --from=builder --chown=appuser:appuser /app/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appuser /app/package.json ./package.json
+COPY --from=builder --chown=appuser:appuser /app/src ./src
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -44,5 +50,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget --spider -q http://localhost:3000 || exit 1
 
-# Start application with logging
-CMD sh -c 'npm start > /app/logs/frontend.log 2> /app/logs/frontend-error.log'
+# Start application
+CMD ["npm", "start"]
