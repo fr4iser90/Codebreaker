@@ -1,22 +1,23 @@
 CHALLENGES = [
+    # 1. First Enigma Machine (1918) - Easiest
     {
         "id": 1,
         "title": "Level 1: The Enigma’s Origin",
-        "ciphertext": "RYRF IAXC! IZG JUASAG OKBG KXUAW MBOIRT WQHXZTN.",
+        "ciphertext": "NIEK ATED! IPH VYGQBT EQNY PJUIE BDKLZK VAYGYYH.",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0}, # A, A
-                {"name": "II", "position": 1, "ring_setting": 0}, # B, A
-                {"name": "III", "position": 2, "ring_setting": 0} # C, A
+                {"name": "I", "position": 0, "ring_setting": 0}, # position 0 = A, ring 0 = A
+                {"name": "II", "position": 1, "ring_setting": 0}, # position 1 = B, ring 0 = A
+                {"name": "III", "position": 2, "ring_setting": 0} # position 2 = C, ring 0 = A
             ],
             "reflector": "B",
             "plugboard": {"A": "B"}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": 0, "ring_setting": 0},
-                {"name": "II", "position": 1, "ring_setting": 0},
-                {"name": "III", "position": 2, "ring_setting": 0}
+                {"name": "I", "position": 0, "ring_setting": 0}, # position 0 = A, ring 0 = A
+                {"name": "II", "position": 1, "ring_setting": 0}, # position 1 = B, ring 0 = A
+                {"name": "III", "position": 2, "ring_setting": 0} # position 2 = C, ring 0 = A
             ],
             "reflector": "B",
             "plugboard": {"A": "B"}
@@ -40,24 +41,25 @@ CHALLENGES = [
             "On a military Enigma up to 10 cables could be used, adding another massive layer of scrambling."
         )
     },
+    # 2. Enigma in use (Bundesarchiv) (1923)
     {
         "id": 2,
         "title": "Level 2: Plugboard Primer",
-        "ciphertext": "XMFHHXQAYBGAKQP! QSS MRTN UOMBCDJP GFJ HRSDSGIYS PRN KDVPRWYTN GZAUW 2.",
+        "ciphertext": "JMEHGLQBYBHBKQP! QSS OLTJ UMMACCQE HMT GRSDCHQYY JRS LWGPRWYNK HOBDW 2.",
         "settings": {
             "rotors": [
-                {"name": "II", "position": 10, "ring_setting": 1}, # K, B
-                {"name": "I", "position": 5, "ring_setting": 3},  # F, D
-                {"name": "III", "position": 11, "ring_setting": 4} # L, E
+                {"name": "II", "position": 10, "ring_setting": 1}, # position 10 = K, ring 1 = B
+                {"name": "I", "position": 5, "ring_setting": 3},  # position 5 = F, ring 3 = D
+                {"name": "III", "position": 11, "ring_setting": 4} # position 11 = L, ring 4 = E
             ],
             "reflector": "B",
-            "plugboard": {"A": "B", "C": "D", "E": "F", "G": "H"}
+            "plugboard": {}
         },
         "settings_public": {
             "rotors": [
-                {"name": "II", "position": None, "ring_setting": 1},
-                {"name": "I", "position": None, "ring_setting": 3},
-                {"name": "III", "position": None, "ring_setting": 4}
+                {"name": "II", "position": 10, "ring_setting": 1}, # position 10 = K, ring 1 = B
+                {"name": "I", "position": 5, "ring_setting": 3},  # position 5 = F, ring 3 = D
+                {"name": "III", "position": 11, "ring_setting": 4} # position 11 = L, ring 4 = E
             ],
             "reflector": "B",
             "plugboard": {}
@@ -79,24 +81,25 @@ CHALLENGES = [
             "Finding a correct crib could dramatically speed up finding the daily key. (You’ll encounter this tactic in later levels.)"
         )
     },
+    # 3. Plugboard of an Enigma machine (1932)
     {
         "id": 3,
         "title": "Level 3: Polish Breakthrough!",
-        "ciphertext": "OENBMLNQSV YACU! YBON YVB WBJCUB JILMYLVSBATZP, IBV UPRS CYRRVX LZGUXXS WL UFZ OFKI IKSAA.",
+        "ciphertext": "HNIVCPDTKH JCDQ! OTCJ UEM KBEFLF HGXGAGMVLGBPV, NMS NJBY VVBWRZ OQYGXFL UP ABQ QDUN WXPWY.",
         "settings": {
             "rotors": [
-                {"name": "I", "position": 23, "ring_setting": 3}, # X, D
-                {"name": "II", "position": 10, "ring_setting": 5},# K, F
-                {"name": "III", "position": 12, "ring_setting": 1}# M, B
+                {"name": "I", "position": 23, "ring_setting": 3}, # position 23 = X, ring 3 = D
+                {"name": "II", "position": 10, "ring_setting": 5}, # position 10 = K, ring 5 = F
+                {"name": "III", "position": 12, "ring_setting": 1} # position 12 = M, ring 1 = B
             ],
             "reflector": "B",
             "plugboard": {}
         },
         "settings_public": {
             "rotors": [
-                {"name": "I", "position": None, "ring_setting": 3},
-                {"name": "II", "position": None, "ring_setting": 5},
-                {"name": "III", "position": None, "ring_setting": 1}
+                {"name": "I", "position": 23, "ring_setting": 3}, # position 23 = X, ring 3 = D
+                {"name": "II", "position": 10, "ring_setting": 5}, # position 10 = K, ring 5 = F
+                {"name": "III", "position": 12, "ring_setting": 1} # position 12 = M, ring 1 = B
             ],
             "reflector": "B",
             "plugboard": {}
@@ -119,15 +122,16 @@ CHALLENGES = [
             "    Did you know? “Enigma” is literally Greek for “riddle/mystery” (dpma.de) – a name the Poles would soon disprove! Their early success showed Enigma was no unsolvable riddle."
         )
     },
+    # 4. Polish Mathematical Breakthrough (1932)
     {
         "id": 4,
-        "title": "Level 4: Bletchley Park Bureau",
+        "title": "Level 4: Polish Mathematical Breakthrough",
         "ciphertext": "PNXHZOLIV! JLK REPRTJE MGM VUYBLUPBK BZNS OPOSCK XNIQMQMDK, HQTF YB DZT MMRY AXWKLNKDVXHJ AUG.",
         "settings": {
             "rotors": [
-                {"name": "IV", "position": 0, "ring_setting": 2}, # A, C
-                {"name": "II", "position": 10, "ring_setting": 0},# K, A
-                {"name": "I", "position": 4, "ring_setting": 3}  # E, D
+                {"name": "IV", "position": 0, "ring_setting": 2}, # position 0 = A, ring 2 = C
+                {"name": "II", "position": 10, "ring_setting": 0}, # position 10 = K, ring 0 = A
+                {"name": "I", "position": 4, "ring_setting": 3}  # position 4 = E, ring 3 = D
             ],
             "reflector": "B",
             "plugboard": {}
@@ -144,8 +148,7 @@ CHALLENGES = [
         "solution": "EXCELLENT! YOU CRACKED THE BLETCHLEY PARK BUREAU CHALLENGE, JUST AS THE REAL CODEBREAKERS DID.",
         "info": (
             "Level 4: Bletchley Park Bureau\n\n"
-            "Welcome to Level 4: Bletchley Park Bureau! Your task is to decrypt a new message using British wartime settings. "
-            "This time, the ring settings and rotor positions are omitted – you must deduce them.\n\n"
+            "Welcome to Level 4: Bletchley Park Bureau! Your task is to decrypt a new message using British wartime settings. This time, the ring settings and rotor positions are omitted – you must deduce them.\n\n"
             "Clue: Intercepted messages from this period often began with the word 'WETTER' (German for 'weather'). Use this as a crib to help deduce the correct rotor positions and ring settings.\n\n"
             "Info:\n\n"
             "    Ring settings: The ring setting (Ringstellung) shifts the internal wiring of each rotor. Even if the rotor is in the same position, a different ring setting will change the cipher output. "
@@ -155,30 +158,29 @@ CHALLENGES = [
             "The first British Bombe was designed by Turing in 1939 and installed at Bletchley in 1940 (britannica.com).\n\n"
             "    Bombes at work: By 1943 hundreds of Bombes (British and American) were running round-the-clock (britannica.com). "
             "Each Bombe tested millions of rotor positions against a crib. This automation let Bletchley quickly find that day’s keys for many messages.\n\n"
-            "    1940 U-boat shift: Early on, Germans introduced more secure procedures (like naval Enigma changes), but Bletchley kept pace. "
-            "For example, in 1941 the capture of codebooks (see next level) and new bombe techniques let the British break Naval Enigma too.\n\n"
-            "    Top secret: All work at Bletchley Park was kept under wraps. Even the field commanders who used Ultra intelligence didn’t know how it was obtained. "
-            "(Ultra was considered so secret that only in 1974 was its existence publicly acknowledged.)"
+            "    1940 U-boat shift: Early on, Germans introduced more secure procedures (like naval Enigma changes), but Bletchley kept pace. For example, in 1941 the capture of codebooks (see next level) and new bombe techniques let the British break Naval Enigma too.\n\n"
+            "    Top secret: All work at Bletchley Park was kept under wraps. Even the field commanders who used Ultra intelligence didn’t know how it was obtained. (Ultra was considered so secret that only in 1974 was its existence publicly acknowledged.)"
         )
     },
+    # 5. Enigma's Mechanical Design (1933)
     {
         "id": 5,
         "title": "Level 5: U-Boat Waters",
-        "ciphertext": "RTPZAYOGLBQ! CQM HLNSWZPVO NPJ G-CLXH TYONPL WDB GVQARAAQ ILD QSGYZS XWGOVHT, TVBJ IY QZC GAVKXR NEZ BS NMHY.",
+        "ciphertext": "ZDBBYMQMOAA! SHR FTWQCMRIJ BRW J-ZXCE KUATPH MTB PQNZGRYA JMY FMCPDZ KAVHMKB, XILN LT PLY FTXZCA EHS XM EDTM.",
         "settings": {
             "rotors": [
-                {"name": "II", "position": 2, "ring_setting": 4}, # C, E
-                {"name": "I", "position": 2, "ring_setting": 1},  # C, B
-                {"name": "III", "position": 2, "ring_setting": 5} # C, F
+                {"name": "II", "position": 2, "ring_setting": 4}, # position 2 = C, ring 4 = E
+                {"name": "I", "position": 2, "ring_setting": 1},  # position 2 = C, ring 1 = B
+                {"name": "III", "position": 2, "ring_setting": 5} # position 2 = C, ring 5 = F
             ],
             "reflector": "B",
             "plugboard": {"X": "Y", "M": "N"}
         },
         "settings_public": {
             "rotors": [
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "I", "position": None, "ring_setting": None},
-                {"name": "III", "position": None, "ring_setting": None}
+                {"name": "II", "position": 2, "ring_setting": 4}, # position 2 = C, ring 4 = E
+                {"name": "I", "position": 2, "ring_setting": 1},  # position 2 = C, ring 1 = B
+                {"name": "III", "position": 2, "ring_setting": 5} # position 2 = C, ring 5 = F
             ],
             "reflector": "B",
             "plugboard": {}
@@ -200,24 +202,25 @@ CHALLENGES = [
             "They exploited every clue – from operator mistakes to captured codebooks – to deduce keys. Even when the Germans upgraded their machines, the Allies adapted and ultimately prevailed."
         )
     },
+    # 6. Bletchley Park Setup (1939)
     {
         "id": 6,
         "title": "Level 6: Cribs and Codes",
-        "ciphertext": "DRBHMTBDI! ZZGYK FXFNL SKB WEKQDCINQYWZ FDAURQ, AZS NYUS VPPAGKIYP RXQXWUY BANHZDB WACSGX DARXLTP. BHTN CTMWGZQBO SZ RDTXBLA.GYFSCQTNK",
+        "ciphertext": "XBZPEG! NOXHJ UUEPE NXF HCJMWCLZMJLN LQBFXN, IKA XLOF WNKFLBMZY BFHWVVT WQNWELQ IGKDPX UQWNOBW. WGLX CKJAQXGGZ HC SUNMNMK.",
         "settings": {
             "rotors": [
-                {"name": "III", "position": 14, "ring_setting": 2}, # O, C
-                {"name": "I", "position": 14, "ring_setting": 4},   # O, E
-                {"name": "IV", "position": 14, "ring_setting": 1}   # O, B
+                {"name": "III", "position": 14, "ring_setting": 2}, # position 14 = O, ring 2 = C
+                {"name": "I", "position": 24, "ring_setting": 4},   # position 24 = Y, ring 4 = E
+                {"name": "IV", "position": 4, "ring_setting": 1}   # position 4 = E, ring 1 = B
             ],
             "reflector": "B",
             "plugboard": {"E": "K", "M": "N"}
         },
         "settings_public": {
             "rotors": [
-                {"name": None, "position": None, "ring_setting": None},
-                {"name": None, "position": None, "ring_setting": None},
-                {"name": None, "position": None, "ring_setting": None}
+                {"name": "III", "position": None, "ring_setting": None},
+                {"name": "I", "position": None, "ring_setting": None},
+                {"name": "IV", "position": None, "ring_setting": None}
             ],
             "reflector": "B",
             "plugboard": {"E": "K", "M": "N"}
@@ -238,27 +241,28 @@ CHALLENGES = [
             "The Allied Bombe machines automated this by looping through wheel orders and positions using a crib (dpma.de)."
         )
     },
+    # 7. Turing's Bombe (1940)
     {
         "id": 7,
         "title": "Level 7: Operation Primrose",
-        "ciphertext": "EVQJFOVKEO QJBYWSVEULS! GGPMPAAYR MBHIKCIY YF IAZACUEJ, HDE KQS DDXG LOPCK DPQG ULLJCFLXCXXF DZZXSPC. VLK UPRYRXE UH KFX M-PWORJ LUS EFHJV.",
+        "ciphertext": "HWFKQJIWWX WMKVVFQYPFY! BRIINGPVJ LOHWAMIJ QO TVIXXXSR, JIS SKA SQJX BDRJT YDPJ FKQHAUXIRXSV SVBNSAW. FKU TGUVPNQ SD KPA T-QYYGE TTO GHYSF.",
         "settings": {
             "rotors": [
-                {"name": "III", "position": 23, "ring_setting": 5}, # X, F
-                {"name": "II", "position": 23, "ring_setting": 2}, # X, C
-                {"name": "I", "position": 23, "ring_setting": 4}  # X, E
+                {"name": "III", "position": 23, "ring_setting": 5}, # position 23 = X, ring 5 = F
+                {"name": "II", "position": 13, "ring_setting": 2}, # position 13 = N, ring 2 = C
+                {"name": "I", "position": 3, "ring_setting": 4}  # position 3 = D, ring 4 = E
             ],
             "reflector": "B",
             "plugboard": {}
         },
         "settings_public": {
             "rotors": [
-                {"name": "III", "position": None, "ring_setting": None},
-                {"name": "II", "position": None, "ring_setting": None},
-                {"name": "I", "position": None, "ring_setting": None}
+                {"name": "III", "position": None, "ring_setting": 5},
+                {"name": "II", "position": 13, "ring_setting": 2},
+                {"name": "I", "position": None, "ring_setting": 4}
             ],
-            "reflector": "C",
-            "plugboard": {"A": "E", "H": "K", "O": "P"}
+            "reflector": None,
+            "plugboard": {}
         },
         "solution": "REMARKABLE ACHIEVEMENT! OPERATION PRIMROSE IS COMPLETE, AND YOU HAVE SHOWN TRUE CODEBREAKING MASTERY. THE SECRETS OF THE U-BOATS ARE YOURS.",
         "info": (
@@ -277,15 +281,16 @@ CHALLENGES = [
             "Throughout the war, codebreakers worked with military intelligence – intercepting Enigma traffic on submarines, planes and radios to provide real-time tips to the convoy escorts."
         )
     },
+    # 8. Naval Enigma Broken (1941)
     {
         "id": 8,
         "title": "Level 8: D-Day Deception",
-        "ciphertext": "GSLSTAJUHXCFI! URF VGHV CDCMJIBXV PMY L-OWW JNQMZXPMV, LTSRZEJHQANAL IIBYFMRN TLSBPJSUDDNTS TRDYUO KIG RUEXCUNFB VCQZAMQN. QWH FCELMG NQ MSNUADK TO MLBBEDC.IPLS",
+        "ciphertext": "XHAYRGWLG! SLX YICM GXLSKNRYO IXU B-GWC HUQTCMTYW, XVOTZLQPIOMDV CESPPILW YVSIUUTCDUDBS TWPWTQ OFO BKWBVVIBI ISVXUYDH. YGK YBQKWU FA QJPZPTA AL JSLWMNU.",
         "settings": {
             "rotors": [
-                {"name": "IV", "position": 0, "ring_setting": 2}, # A, C
-                {"name": "V", "position": 3, "ring_setting": 4},  # D, E
-                {"name": "III", "position": 3, "ring_setting": 1} # D, B
+                {"name": "IV", "position": 0, "ring_setting": 2}, # position 0 = A, ring 2 = C
+                {"name": "V", "position": 16, "ring_setting": 4},  # position 16 = Q, ring 4 = E
+                {"name": "III", "position": 9, "ring_setting": 1} # position 9 = J, ring 1 = B
             ],
             "reflector": "B",
             "plugboard": {
@@ -300,7 +305,9 @@ CHALLENGES = [
                 {"name": "III", "position": None, "ring_setting": None}
             ],
             "reflector": "B",
-            "plugboard": {"A": "D", "H": "F", "K": "C", "N": "L", "W": "Y"}
+            "plugboard": {
+                "A": "D", "H": "F", "K": "C", "N": "L", "W": "Y"
+            }
         },
         "solution": "BRILLIANT! YOU HAVE UNRAVELED THE D-DAY DECEPTION, DEMONSTRATING ADVANCED CRYPTANALYTIC SKILLS AND STRATEGIC THINKING. THE COURSE OF HISTORY IS CHANGED.",
         "info": (
@@ -320,15 +327,16 @@ CHALLENGES = [
             "This level’s message alludes to Operation Overlord, the codename for the Normandy landings on June 6, 1944."
         )
     },
+    # 9. Battle of Cape Matapan (1941)
     {
         "id": 9,
         "title": "Level 9: Allied Alliance",
-        "ciphertext": "XZHFFPFGPHZ",
+        "ciphertext": "DFFZVGUTH! HJW DPYI XEIKAN MBV RIGRCV MQPPPZIW, HEIEYSZI IYPBWDO HPX WDBCQCAF BDEJDOB FQZ MONISRP USKTGMOT Y THXDBC GZFADJPBEMO. IVS SRT NI CE RGSGQ.",
         "settings": {
             "rotors": [
-                {"name": "II", "position": 23, "ring_setting": 2}, # X, C
-                {"name": "III", "position": 25, "ring_setting": 4},# Z, E
-                {"name": "I", "position": 7, "ring_setting": 1}   # H, B
+                {"name": "II", "position": 23, "ring_setting": 2}, # position 23 = X, ring 2 = C
+                {"name": "III", "position": 25, "ring_setting": 4}, # position 25 = Z, ring 4 = E
+                {"name": "I", "position": 7, "ring_setting": 1}   # position 7 = H, ring 1 = B
             ],
             "reflector": "C",
             "plugboard": {"A": "U", "B": "Z", "O": "X"}
@@ -356,15 +364,16 @@ CHALLENGES = [
             "The work done during the war inspired a new generation of computer scientists (Alan Turing’s work on the Bombe is often cited as a step toward modern computing (dpma.de))."
         )
     },
+    # 10. War End and Legacy (1945)
     {
         "id": 10,
         "title": "Level 10: Ultra Unleashed!",
-        "ciphertext": "HJYVZEX",
+        "ciphertext": "JZDKOZPXQZ! PVE OLHV ZGXFXBOBE MPX UUFBPX OOXCRQHXWJ. OPJQ HEI OYTFXQ AC FQZWQSZGQ SRCB, LPBE HBNHZQHQMUKI JIHOEU MMWC AJBDLUQ NVM KYXTZ. CRSMT PUTXNIM QZ RUBKD—BWXJMHQRVJMQIWO, ZHCEBY XYATEJLIVNKV!",
         "settings": {
             "rotors": [
-                {"name": "IV", "position": 3, "ring_setting": 5}, # D, F
-                {"name": "V", "position": 3, "ring_setting": 2},  # D, C
-                {"name": "III", "position": 3, "ring_setting": 4} # D, E
+                {"name": "IV", "position": 23, "ring_setting": 5}, # position 23 = X, ring 5 = F
+                {"name": "V", "position": 18, "ring_setting": 2},  # position 18 = S, ring 2 = C
+                {"name": "III", "position": 12, "ring_setting": 4} # position 12 = M, ring 4 = E
             ],
             "reflector": "B",
             "plugboard": {
@@ -373,9 +382,9 @@ CHALLENGES = [
         },
         "settings_public": {
             "rotors": [
-                {"name": None, "position": None, "ring_setting": None},
-                {"name": None, "position": None, "ring_setting": None},
-                {"name": None, "position": None, "ring_setting": None}
+                {"name": "IV", "position": None, "ring_setting": None},
+                {"name": "V", "position": None, "ring_setting": None},
+                {"name": "III", "position": None, "ring_setting": None}
             ],
             "reflector": "B",
             "plugboard": {}

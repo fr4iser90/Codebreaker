@@ -45,7 +45,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "Marian Rejewski, Jerzy Różycki, and Henryk Zygalski revolutionize cryptanalysis with mathematical theory.",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Marian_Rejewski_1932_small.jpg/175px-Marian_Rejewski_1932_small.jpg",
     details: "Three young mathematicians from Poznań University, secretly recruited by Poland's Cipher Bureau, made the first major breakthrough in breaking Enigma. Using permutation theory, they reverse-engineered the machine's wiring and built the first 'bomba' machine.",
-    challengeId: 10,
+    challengeId: 4,
   },
   {
     year: 1933,
@@ -53,7 +53,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "The complex mechanical design of the Enigma machine is fully understood and documented.",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Enigma-rotor-stack.jpg/640px-Enigma-rotor-stack.jpg",
     details: "The Enigma's mechanical design featured a keyboard, lampboard, and stack of rotors, each wired differently. The machine's complexity came from its ability to generate approximately 1.59×10^20 possible key combinations.",
-    challengeId: 9,
+    challengeId: 5,
   },
   {
     year: 1939,
@@ -61,7 +61,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "The British Government Code and Cypher School moves to Bletchley Park.",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Bletchley_Park_Mansion.jpg/1600px-Bletchley_Park_Mansion.jpg?20170304232652",
     details: "Bletchley Park became the central site for British codebreakers during World War II. The estate was chosen for its location between Oxford and Cambridge universities.",
-    challengeId: 4,
+    challengeId: 6,
   },
   {
     year: 1940,
@@ -69,7 +69,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "Alan Turing and Gordon Welchman develop the Bombe machine to break Enigma codes.",
     image: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Bombe-rebuild.jpg?20140417024253",
     details: "Alan Turing and Gordon Welchman developed the Bombe machine, which could find the daily settings of the Enigma machines. This was a crucial breakthrough in breaking German communications.",
-    challengeId: 5,
+    challengeId: 7,
   },
   {
     year: 1941,
@@ -77,7 +77,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "The British successfully break the Naval Enigma code, a major breakthrough in the war.",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Bletchley_Park_Naval_Enigma_IMG_3604.JPG/1280px-Bletchley_Park_Naval_Enigma_IMG_3604.JPG",
     details: "Breaking the Naval Enigma was particularly challenging as it used more complex settings. This breakthrough helped the Allies track German U-boat movements.",
-    challengeId: 6,
+    challengeId: 8,
   },
   {
     year: 1941,
@@ -85,7 +85,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "A decisive naval victory made possible by breaking Italian naval codes at Bletchley Park.",
     image: "https://upload.wikimedia.org/wikipedia/commons/9/99/Battle_of_Cape_Matapan_map.gif?20210409233317",
     details: "In March 1941, Mavis Batey's decryption of Italian naval Enigma messages led to a crucial victory at Cape Matapan. The intelligence allowed Admiral Cunningham to sink three heavy cruisers and two destroyers without major British losses.",
-    challengeId: 8,
+    challengeId: 9,
   },
   {
     year: 1945,
@@ -93,7 +93,7 @@ const timelineEvents: TimelineEvent[] = [
     description: "The war ends, and the work at Bletchley Park remains classified for decades.",
     image: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Bundesarchiv_Bild_101II-MW-4222-02A%2C_%22Enigma%22_auf_U-Boot_U-124.jpg",
     details: "After the war, the work at Bletchley Park remained classified for decades. The contributions of the codebreakers, including Alan Turing, were not fully recognized until much later.",
-    challengeId: 7,
+    challengeId: 10,
   },
 ];
 
