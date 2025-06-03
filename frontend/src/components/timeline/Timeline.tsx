@@ -99,22 +99,21 @@ const timelineEvents: TimelineEvent[] = [
 
 export const Timeline: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<TimelineEvent | null>(null);
-  const [solvedEvents, setSolvedEvents] = useState<Record<number, boolean>>(() => {
-    // Load solved events from localStorage on component mount
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('solvedEnigmaChallenges');
-      return saved ? JSON.parse(saved) : {};
-    }
-    return {};
-  });
+  const [solvedEvents, setSolvedEvents] = useState<Record<number, boolean>>({});
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
 
+  // Load solved events from localStorage on component mount
+  useEffect(() => {
+    const saved = localStorage.getItem('solvedEnigmaChallenges');
+    if (saved) {
+      setSolvedEvents(JSON.parse(saved));
+    }
+  }, []);
+
   // Save solved events to localStorage whenever they change
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('solvedEnigmaChallenges', JSON.stringify(solvedEvents));
-    }
+    localStorage.setItem('solvedEnigmaChallenges', JSON.stringify(solvedEvents));
   }, [solvedEvents]);
 
   return (
@@ -168,7 +167,7 @@ export const Timeline: React.FC = () => {
                       scale: 1.05,
                       boxShadow: "0 0 20px rgba(234, 179, 8, 0.3)"
                     }}
-                    className={`bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden ${solvedEvents[event.challengeId] ? 'border-2 border-green-400' : ''}`}
+                    className="bg-gray-800 p-6 rounded-lg cursor-pointer overflow-hidden border-2 border-gray-700"
                     onClick={() => setSelectedEvent(event)}
                   >
                     <motion.div

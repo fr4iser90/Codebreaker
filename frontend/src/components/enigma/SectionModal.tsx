@@ -23,6 +23,7 @@ interface ChallengeData {
   solution: string;
   settings: any; // Full solution settings from backend (not strictly typed here as we focus on public)
   settings_public?: PublicSettingsData; // Public settings from API
+  sources?: Record<string, { name: string; url: string; description: string }[]>;
 }
 
 interface SectionModalProps {
@@ -46,14 +47,20 @@ export const SectionModal: React.FC<SectionModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [showSimulator, setShowSimulator] = useState(false);
   const [showClue, setShowClue] = useState(false);
+  const [showSources, setShowSources] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const [userSettings, setUserSettings] = useState<PublicSettingsData | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen && challengeId) {
-      enigmaApi.getChallengeById(challengeId).then(data => setChallenge(data as ChallengeData));
+      enigmaApi.getChallengeById(challengeId).then(data => {
+        setChallenge(data as ChallengeData);
+      });
     } else if (isOpen) {
-      enigmaApi.getChallenge().then(data => setChallenge(data as ChallengeData));
+      enigmaApi.getChallenge().then(data => {
+        setChallenge(data as ChallengeData);
+      });
     }
   }, [isOpen, challengeId]);
 
@@ -63,13 +70,15 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     }
   }, [challenge]);
 
-  // State-Reset bei Wechsel der Challenge oder Öffnen/Schließen
+  // Reset states when modal closes or challenge changes
   useEffect(() => {
     setUserInput('');
     setSolved(false);
     setError(null);
     setShowSimulator(false);
     setShowClue(false);
+    setShowSources(false);
+    setShowDetails(false);
   }, [challengeId, isOpen]);
 
   // Funktion, um userInput von außen zu setzen und Fokus zu setzen
@@ -114,13 +123,13 @@ export const SectionModal: React.FC<SectionModalProps> = ({
 
   // Extract clue from info text
   const getClue = (info: string) => {
-    const clueMatch = info.match(/Clue: ([\s\S]*?)(?=\n\n|$)/);
-    return clueMatch ? clueMatch[1].trim() : null;
+    const clueMatch = info.match(/Clue: (.*)\n/);
+    return clueMatch ? clueMatch[1] : null;
   };
 
   // Get info text without the clue
   const getInfoWithoutClue = (info: string) => {
-    return info.replace(/Clue: [\s\S]*?(?=\n\n|$)/, '').trim();
+    return info.replace(/Clue:.*\n/, '');
   };
 
   return (
@@ -166,37 +175,113 @@ export const SectionModal: React.FC<SectionModalProps> = ({
                 )}
               </div>
             )}
+
             {challenge && (
-              <div className="mb-4 p-4 bg-gray-800 rounded">
-                <h3 className="text-lg font-semibold text-yellow-300 mb-2">Enigma Challenge Details</h3>
-                <b>Encrypted Message:</b> <span className="font-mono text-yellow-200">{challenge.ciphertext}</span><br/>
-                {challenge.settings_public && (
-                  <div className="mt-2 pt-2 text-sm">
-                    <h4 className="text-md font-semibold text-yellow-300 mb-1">Public Settings:</h4>
-                    <div className="ml-2">
-                      <b>Rotors:</b>
-                      <div className="flex flex-col gap-1 mt-1 mb-1 text-xs">
-                        {challenge.settings_public.rotors.map((r, idx) => (
-                          <div key={`public-rotor-display-${idx}`} className="flex items-center gap-2">
-                            <span className="font-mono text-yellow-200">
-                              {r.name} (Pos: {r.position !== null ? String.fromCharCode(65 + r.position) : '?'}, Ring: {r.ring_setting !== null ? String.fromCharCode(65 + r.ring_setting) : '?'})
-                            </span>
+              <div className="mb-4">
+                <button
+                  onClick={() => setShowDetails(!showDetails)}
+                  className="flex items-center text-yellow-400 hover:text-yellow-300 transition-colors"
+                >
+                  <span className="mr-2">
+                    {showDetails ? '▼' : '▶'}
+                  </span>
+                  Enigma Challenge Details
+                </button>
+                <AnimatePresence>
+                  {showDetails && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-2 p-4 bg-gray-800 rounded">
+                        <b>Encrypted Message:</b> <span className="font-mono text-yellow-200">{challenge.ciphertext}</span><br/>
+                        {challenge.settings_public && (
+                          <div className="mt-2 pt-2 text-sm">
+                            <h4 className="text-md font-semibold text-yellow-300 mb-1">Public Settings:</h4>
+                            <div className="ml-2">
+                              <b>Rotors:</b>
+                              <div className="flex flex-col gap-1 mt-1 mb-1 text-xs">
+                                {challenge.settings_public.rotors.map((r, idx) => (
+                                  <div key={`public-rotor-display-${idx}`} className="flex items-center gap-2">
+                                    <span className="font-mono text-yellow-200">
+                                      {r.name} (Pos: {r.position !== null ? String.fromCharCode(65 + r.position) : '?'}, Ring: {r.ring_setting !== null ? String.fromCharCode(65 + r.ring_setting) : '?'})
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                              <b>Reflector:</b> <span className="font-mono text-yellow-200">{challenge.settings_public.reflector || '?'}</span><br/>
+                              <b>Plugboard:</b> <span className="font-mono text-yellow-200">
+                                {Object.entries(challenge.settings_public.plugboard || {}).length > 0
+                                  ? Object.entries(challenge.settings_public.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
+                                  : 'None'}
+                              </span>
+                            </div>
                           </div>
-                        ))}
+                        )}
+                        <br/>
+                        Use the "Open Enigma Simulator" button to try and decrypt the message with these settings.
                       </div>
-                      <b>Reflector:</b> <span className="font-mono text-yellow-200">{challenge.settings_public.reflector || '?'}</span><br/>
-                      <b>Plugboard:</b> <span className="font-mono text-yellow-200">
-                        {Object.entries(challenge.settings_public.plugboard || {}).length > 0
-                          ? Object.entries(challenge.settings_public.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
-                          : 'None'}
-                      </span>
-                    </div>
-                  </div>
-                )}
-                <br/>
-                Use the "Open Enigma Simulator" button to try and decrypt the message with these settings.
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
+
+            {/* Sources Display */}
+            {challenge?.sources && (
+              <div className="mb-4">
+                <button
+                  onClick={() => setShowSources(!showSources)}
+                  className="flex items-center text-yellow-400 hover:text-yellow-300 transition-colors"
+                >
+                  <span className="mr-2">
+                    {showSources ? '▼' : '▶'}
+                  </span>
+                  Sources
+                </button>
+                <AnimatePresence>
+                  {showSources && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-2 p-4 bg-gray-800 rounded">
+                        {Object.entries(challenge.sources).map(([category, sources]) => {
+                          if (category === 'description') return null;
+                          return (
+                            <div key={category} className="mb-2">
+                              <h4 className="text-md font-semibold text-yellow-300 mb-1 capitalize">{category.replace('_', ' ')}:</h4>
+                              <div className="ml-2">
+                                {Array.isArray(sources) && sources.map((source, idx) => (
+                                  <div key={`${category}-source-${idx}`} className="mb-1">
+                                    <a 
+                                      href={source.url} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-blue-400 hover:text-blue-300"
+                                    >
+                                      {source.name}
+                                    </a>
+                                    <p className="text-gray-400 text-xs mt-1">{source.description}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-400 mb-2">
                 Decrypt the secret:

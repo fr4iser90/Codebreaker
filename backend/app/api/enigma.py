@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 from app.enigma.machine import EnigmaMachine
 from ..enigma.components import Plugboard
 import logging
 from .challenges import CHALLENGES
+from .sources import get_challenge_sources
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -15,8 +16,13 @@ machine = EnigmaMachine()
 
 class RotorSettings(BaseModel):
     name: str
-    position: int
-    ring_setting: int
+    position: Optional[int] = None
+    ring_setting: Optional[int] = None
+
+class PublicSettings(BaseModel):
+    rotors: List[RotorSettings]
+    reflector: Optional[str] = None
+    plugboard: Dict[str, str] = {}
 
 class MachineSettings(BaseModel):
     rotors: List[RotorSettings]
@@ -29,9 +35,10 @@ class Message(BaseModel):
 class ChallengeResponse(BaseModel):
     id: int
     ciphertext: str
-    settings: dict
+    settings: Dict[str, Any]
     info: str
-    settings_public: Optional[Dict] = None
+    settings_public: Optional[PublicSettings] = None
+    sources: Optional[Dict[str, Any]] = None
 
 def normalize_solution(s):
     return ''.join(c for c in s.upper() if c.isalpha())
@@ -121,25 +128,29 @@ async def get_settings():
 
 @router.get("/challenge", response_model=ChallengeResponse)
 async def get_enigma_challenge():
-    # Statische Challenge für Demo (Challenge 1)
-    challenge = CHALLENGES[0]
+    challenge = CHALLENGES[0]  # Get first challenge
+    sources = get_challenge_sources(challenge["id"])
     return {
+        "id": challenge["id"],
         "ciphertext": challenge["ciphertext"],
         "settings": challenge["settings"],
         "info": challenge["info"],
-        "settings_public": challenge.get("settings_public")
+        "settings_public": challenge.get("settings_public"),
+        "sources": sources
     }
 
 @router.get("/challenge/{challenge_id}", response_model=ChallengeResponse)
 async def get_enigma_challenge_by_id(challenge_id: int):
     for challenge in CHALLENGES:
         if challenge["id"] == challenge_id:
+            sources = get_challenge_sources(challenge_id)
             return {
                 "id": challenge["id"],
                 "ciphertext": challenge["ciphertext"],
                 "settings": challenge["settings"],
                 "info": challenge["info"],
-                "settings_public": challenge.get("settings_public")
+                "settings_public": challenge.get("settings_public"),
+                "sources": sources
             }
     raise HTTPException(status_code=404, detail="Challenge not found")
 
