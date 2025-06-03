@@ -97,6 +97,7 @@ lerna-debug.log*
 *.sqlite3
 *.db
 
+shell.nix
 # System Files
 .DS_Store
 Thumbs.db

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from app.enigma.machine import EnigmaMachine
@@ -31,6 +31,9 @@ class ChallengeResponse(BaseModel):
     settings: dict
     info: str
     settings_public: Optional[Dict] = None
+
+def normalize_solution(s):
+    return ''.join(c for c in s.upper() if c.isalpha())
 
 @router.post("/settings")
 async def set_settings(settings: MachineSettings):
@@ -136,4 +139,14 @@ async def get_enigma_challenge_by_id(challenge_id: int):
                 "info": challenge["info"],
                 "settings_public": challenge.get("settings_public")
             }
+    raise HTTPException(status_code=404, detail="Challenge not found")
+
+@router.post("/challenge/{challenge_id}/validate")
+async def validate_solution(challenge_id: int, request: Request):
+    data = await request.json()
+    user_solution = data.get("solution", "")
+    for challenge in CHALLENGES:
+        if challenge["id"] == challenge_id:
+            correct = normalize_solution(user_solution) == normalize_solution(challenge["solution"])
+            return {"correct": correct}
     raise HTTPException(status_code=404, detail="Challenge not found")

@@ -23,6 +23,7 @@ interface PublicSettingsData {
 interface EnigmaSimulatorProps {
   initialSettings?: PublicSettingsData | null;
   ciphertext?: string | null;
+  onCopyOutputToModal?: (output: string) => void;
 }
 
 const ROTOR_TYPES = {
@@ -40,7 +41,7 @@ const REFLECTOR_TYPES = {
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext }) => {
+export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSettings, ciphertext, onCopyOutputToModal }) => {
   const searchParams = useSearchParams();
   const [rotors, setRotors] = useState([
     { type: 'I', position: 0, ringSetting: 0 }, // Default initial state
@@ -358,23 +359,22 @@ export const EnigmaSimulator: React.FC<EnigmaSimulatorProps> = ({ initialSetting
                     placeholder="Type your message here..."
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Output
-                  </label>
-                  <div className="w-full h-32 bg-gray-700 text-white p-4 rounded-lg overflow-x-auto break-words whitespace-pre-wrap">
-                    {isLoading ? (
-                      <div className="flex items-center justify-center h-full">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full"
-                        />
-                      </div>
-                    ) : (
-                      outputMessage
-                    )}
-                  </div>
+                <div className="flex flex-col gap-2 mt-4">
+                  <label className="font-bold text-yellow-300">Output</label>
+                  <textarea
+                    className="w-full p-2 rounded bg-gray-800 text-yellow-200 border border-gray-700 font-mono"
+                    value={outputMessage}
+                    rows={4}
+                    readOnly
+                  />
+                  {onCopyOutputToModal && (
+                    <button
+                      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded font-bold hover:bg-blue-400 transition"
+                      onClick={() => onCopyOutputToModal(outputMessage)}
+                    >
+                      Lösung ins Eingabefeld übernehmen
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

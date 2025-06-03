@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EnigmaSimulator } from './EnigmaSimulator';
 import { enigmaApi } from '@/lib/api/enigma';
@@ -45,8 +45,9 @@ export const SectionModal: React.FC<SectionModalProps> = ({
   const [solved, setSolved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSimulator, setShowSimulator] = useState(false);
-  // const [showSettings, setShowSettings] = useState(false); // Removed
+  const [showClue, setShowClue] = useState(false);
   const [userSettings, setUserSettings] = useState<PublicSettingsData | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen && challengeId) {
@@ -68,16 +69,39 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     setSolved(false);
     setError(null);
     setShowSimulator(false);
+    setShowClue(false);
   }, [challengeId, isOpen]);
 
-  const handleCheck = () => {
-    if (!challenge) return;
-    if (userInput.trim().toUpperCase() === (challenge.solution || 'HELLO')) {
-      setSolved(true);
-      setError(null);
-      onSolved();
-    } else {
-      setError('Try again! Look for clues in the text...');
+  // Funktion, um userInput von außen zu setzen und Fokus zu setzen
+  const setUserInputFromSimulator = (text: string) => {
+    setUserInput(text);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  };
+
+  // Robuster Vergleich: Satzzeichen/Whitespace ignorieren, alles Uppercase
+  function normalize(str: string) {
+    return str.replace(/[^A-Z]/gi, '').toUpperCase();
+  }
+
+  const handleCheck = async () => {
+    if (!challenge || typeof challenge.id !== 'number') {
+      setError('Challenge not loaded correctly. Please close and reopen the modal.');
+      return;
+    }
+    setError(null);
+    try {
+      const res = await enigmaApi.validateSolution(challenge.id, userInput);
+      if (res.correct) {
+        setSolved(true);
+        setError(null);
+        onSolved();
+      } else {
+        setError('Try again! Look for clues in the text...');
+      }
+    } catch (e) {
+      setError('Fehler bei der Validierung. Bitte versuche es erneut.');
     }
   };
 
@@ -85,12 +109,19 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     setUserInput('');
     setSolved(false);
     setError(null);
-    // setShowSettings(false); // Removed
     onClose();
   };
 
-  // Removed handleSettingChange, renderRotorSettings, and renderReflectorSettings
-  // as the interactive configuration is now handled by EnigmaSimulator itself.
+  // Extract clue from info text
+  const getClue = (info: string) => {
+    const clueMatch = info.match(/Clue: ([\s\S]*?)(?=\n\n|$)/);
+    return clueMatch ? clueMatch[1].trim() : null;
+  };
+
+  // Get info text without the clue
+  const getInfoWithoutClue = (info: string) => {
+    return info.replace(/Clue: [\s\S]*?(?=\n\n|$)/, '').trim();
+  };
 
   return (
     <AnimatePresence>
@@ -117,8 +148,24 @@ export const SectionModal: React.FC<SectionModalProps> = ({
             </button>
             <h2 className="text-2xl font-bold mb-4 text-yellow-400">{title}</h2>
             <div className="mb-4 text-gray-200 whitespace-pre-line overflow-y-auto max-h-[30vh] md:max-h-[40vh]">
-              {challenge ? challenge.info : 'Loading...'}
+              {challenge ? getInfoWithoutClue(challenge.info) : 'Loading...'}
             </div>
+            {challenge && getClue(challenge.info) && (
+              <div className="mb-4">
+                <button
+                  className="bg-purple-600 text-white px-4 py-2 rounded font-bold hover:bg-purple-500 transition"
+                  onClick={() => setShowClue(!showClue)}
+                >
+                  {showClue ? 'Hide Clue' : 'Show Clue'}
+                </button>
+                {showClue && (
+                  <div className="mt-2 p-3 bg-purple-900 bg-opacity-50 rounded border border-purple-500">
+                    <span className="font-bold text-purple-300">Clue: </span>
+                    <span className="text-purple-200">{getClue(challenge.info)}</span>
+                  </div>
+                )}
+              </div>
+            )}
             {challenge && (
               <div className="mb-4 p-4 bg-gray-800 rounded">
                 <h3 className="text-lg font-semibold text-yellow-300 mb-2">Enigma Challenge Details</h3>
@@ -161,6 +208,7 @@ export const SectionModal: React.FC<SectionModalProps> = ({
                 className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-yellow-400"
                 placeholder="Enter your solution..."
                 disabled={solved}
+                ref={inputRef}
               />
               {error && <div className="text-red-400 mt-2">{error}</div>}
             </div>
@@ -205,7 +253,7 @@ export const SectionModal: React.FC<SectionModalProps> = ({
               >
                 ×
               </button>
-              <EnigmaSimulator initialSettings={userSettings} ciphertext={challenge?.ciphertext || null} />
+              <EnigmaSimulator initialSettings={userSettings} ciphertext={challenge?.ciphertext || null} onCopyOutputToModal={setUserInputFromSimulator} />
             </motion.div>
           )}
         </motion.div>
