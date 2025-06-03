@@ -8,6 +8,7 @@ interface SectionModalProps {
   onClose: () => void;
   onSolved: () => void;
   title: string;
+  challengeId?: number;
 }
 
 export const SectionModal: React.FC<SectionModalProps> = ({
@@ -15,6 +16,7 @@ export const SectionModal: React.FC<SectionModalProps> = ({
   onClose,
   onSolved,
   title,
+  challengeId,
 }) => {
   const [challenge, setChallenge] = useState<any>(null);
   const [userInput, setUserInput] = useState('');
@@ -23,10 +25,12 @@ export const SectionModal: React.FC<SectionModalProps> = ({
   const [showSimulator, setShowSimulator] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && challengeId) {
+      enigmaApi.getChallengeById(challengeId).then(setChallenge);
+    } else if (isOpen) {
       enigmaApi.getChallenge().then(setChallenge);
     }
-  }, [isOpen]);
+  }, [isOpen, challengeId]);
 
   const handleCheck = () => {
     if (!challenge) return;
@@ -78,14 +82,22 @@ export const SectionModal: React.FC<SectionModalProps> = ({
               {challenge && (
                 <div className="mb-4 p-4 bg-gray-800 rounded">
                   <b>Enigma-Challenge:</b><br/>
-                  <b>Verschlüsselte Nachricht:</b> {challenge.ciphertext}<br/>
-                  <b>Enigma-Einstellungen:</b><br/>
-                  Rotoren: {challenge.settings.rotors.map((r: any) => r.name).join('-')}<br/>
-                  Position: {challenge.settings.rotors.map((r: any) => String.fromCharCode(65 + r.position)).join('-')}<br/>
-                  Ringstellung: {challenge.settings.rotors.map((r: any) => String.fromCharCode(65 + r.ring_setting)).join('-')}<br/>
+                  <b>Encrypted Message:</b> {challenge.ciphertext}<br/>
+                  <b>Enigma Settings:</b><br/>
+                  {/* Rotor display with spacing */}
+                  Rotors:
+                  <div className="flex flex-col gap-1 mt-1 mb-2">
+                    {challenge.settings.rotors.map((r: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="font-mono text-yellow-300">{r.name} (<span>{String.fromCharCode(65 + r.position)}</span>)</span>
+                        <span className="mx-2 text-gray-500">|</span>
+                        <span className="text-xs text-gray-400">Ring: {String.fromCharCode(65 + r.ring_setting)}</span>
+                      </div>
+                    ))}
+                  </div>
                   Plugboard: {Object.entries(challenge.settings.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')}<br/>
                   <br/>
-                  Entschlüssle die Nachricht mit dem Simulator und gib das Ergebnis unten ein!
+                  Decrypt the message with the simulator and enter the result below!
                 </div>
               )}
               <div className="mb-4">

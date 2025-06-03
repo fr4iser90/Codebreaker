@@ -123,3 +123,14 @@ async def get_enigma_challenge():
         "settings": challenge["settings"],
         "info": challenge["info"]
     }
+
+@router.get("/challenge/{challenge_id}", response_model=ChallengeResponse)
+async def get_enigma_challenge_by_id(challenge_id: int):
+    for challenge in CHALLENGES:
+        if challenge["id"] == challenge_id:
+            return {
+                "ciphertext": challenge["ciphertext"],
+                "settings": challenge["settings"],
+                "info": challenge["info"]
+            }
+    raise HTTPException(status_code=404, detail="Challenge not found")

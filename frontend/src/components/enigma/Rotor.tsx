@@ -170,7 +170,7 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, ringSetting, la
       <motion.svg
         width={100}
         height={100}
-        style={{ marginTop: -30, rotate: totalRingRotation }}
+        style={{ marginTop: -20, rotate: totalRingRotation }}
         className="cursor-grab active:cursor-grabbing"
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
@@ -221,7 +221,7 @@ export const Rotor: React.FC<RotorProps> = ({ letters, position, ringSetting, la
           );
         })}
       </motion.svg>
-      <div className="text-xs text-gray-400 select-none mb-1">Ringstellung: {letters[ringSetting]}</div>
+      <div className="text-xs text-gray-400 select-none mb-4">Ringstellung: {letters[ringSetting]}</div>
       {label}
       <div className="mt-2 text-sm text-gray-400 select-none">Ziehen zum Drehen</div>
     </div>
