@@ -23,6 +23,8 @@ export const SectionModal: React.FC<SectionModalProps> = ({
   const [solved, setSolved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSimulator, setShowSimulator] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [userSettings, setUserSettings] = useState<any>(null);
 
   useEffect(() => {
     if (isOpen && challengeId) {
@@ -32,15 +34,20 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     }
   }, [isOpen, challengeId]);
 
+  useEffect(() => {
+    if (challenge?.settings_public) {
+      setUserSettings(challenge.settings_public);
+    }
+  }, [challenge]);
+
   const handleCheck = () => {
     if (!challenge) return;
-    // Hier: Demo-Check, in echt: POST an /challenge/validate
     if (userInput.trim().toUpperCase() === (challenge.solution || 'HELLO')) {
       setSolved(true);
       setError(null);
       onSolved();
     } else {
-      setError('Das ist leider nicht korrekt. Versuche es nochmal!');
+      setError('Try again! Look for clues in the text...');
     }
   };
 
@@ -48,7 +55,82 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     setUserInput('');
     setSolved(false);
     setError(null);
+    setShowSettings(false);
     onClose();
+  };
+
+  const handleSettingChange = (type: string, index: number | null, value: any) => {
+    if (!userSettings) return;
+
+    const newSettings = { ...userSettings };
+    if (type === 'rotor') {
+      if (index !== null) {
+        newSettings.rotors[index] = { ...newSettings.rotors[index], ...value };
+      }
+    } else if (type === 'reflector') {
+      newSettings.reflector = value;
+    } else if (type === 'plugboard') {
+      newSettings.plugboard = value;
+    }
+    setUserSettings(newSettings);
+  };
+
+  const renderRotorSettings = () => {
+    if (!userSettings) return null;
+
+    return (
+      <div className="flex flex-col gap-2">
+        {userSettings.rotors.map((rotor: any, idx: number) => (
+          <div key={idx} className="flex items-center gap-2">
+            <span className="font-mono text-yellow-300">{rotor.name}</span>
+            <select
+              className="bg-gray-800 text-white px-2 py-1 rounded"
+              value={rotor.position === null ? '' : String.fromCharCode(65 + rotor.position)}
+              onChange={(e) => handleSettingChange('rotor', idx, { position: e.target.value ? e.target.value.charCodeAt(0) - 65 : null })}
+              disabled={rotor.position !== null}
+            >
+              <option value="">Select position</option>
+              {Array.from({ length: 26 }, (_, i) => (
+                <option key={i} value={String.fromCharCode(65 + i)}>
+                  {String.fromCharCode(65 + i)}
+                </option>
+              ))}
+            </select>
+            <select
+              className="bg-gray-800 text-white px-2 py-1 rounded"
+              value={rotor.ring_setting === null ? '' : String.fromCharCode(65 + rotor.ring_setting)}
+              onChange={(e) => handleSettingChange('rotor', idx, { ring_setting: e.target.value ? e.target.value.charCodeAt(0) - 65 : null })}
+              disabled={rotor.ring_setting !== null}
+            >
+              <option value="">Select ring</option>
+              {Array.from({ length: 26 }, (_, i) => (
+                <option key={i} value={String.fromCharCode(65 + i)}>
+                  {String.fromCharCode(65 + i)}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderReflectorSettings = () => {
+    if (!userSettings) return null;
+
+    return (
+      <select
+        className="bg-gray-800 text-white px-2 py-1 rounded"
+        value={userSettings.reflector || ''}
+        onChange={(e) => handleSettingChange('reflector', null, e.target.value || null)}
+        disabled={userSettings.reflector !== null}
+      >
+        <option value="">Select reflector</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+      </select>
+    );
   };
 
   return (
@@ -71,45 +153,60 @@ export const SectionModal: React.FC<SectionModalProps> = ({
               <button
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
                 onClick={handleClose}
-                aria-label="Schließen"
+                aria-label="Close"
               >
                 ×
               </button>
               <h2 className="text-2xl font-bold mb-4 text-yellow-400">{title}</h2>
               <div className="mb-4 text-gray-200 whitespace-pre-line">
-                {challenge ? challenge.info : 'Lade Informationen...'}
+                {challenge ? challenge.info : 'Loading...'}
               </div>
               {challenge && (
                 <div className="mb-4 p-4 bg-gray-800 rounded">
-                  <b>Enigma-Challenge:</b><br/>
+                  <b>Enigma Challenge:</b><br/>
                   <b>Encrypted Message:</b> {challenge.ciphertext}<br/>
-                  <b>Enigma Settings:</b><br/>
-                  {/* Rotor display with spacing */}
-                  Rotors:
-                  <div className="flex flex-col gap-1 mt-1 mb-2">
-                    {challenge.settings.rotors.map((r: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <span className="font-mono text-yellow-300">{r.name} (<span>{String.fromCharCode(65 + r.position)}</span>)</span>
-                        <span className="mx-2 text-gray-500">|</span>
-                        <span className="text-xs text-gray-400">Ring: {String.fromCharCode(65 + r.ring_setting)}</span>
+                  {showSettings ? (
+                    <>
+                      <b>Enigma Settings:</b><br/>
+                      <div className="mt-2">
+                        <b>Rotors:</b>
+                        {renderRotorSettings()}
                       </div>
-                    ))}
-                  </div>
-                  Plugboard: {Object.entries(challenge.settings.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')}<br/>
+                      <div className="mt-2">
+                        <b>Reflector:</b>
+                        {renderReflectorSettings()}
+                      </div>
+                      <div className="mt-2">
+                        <b>Plugboard:</b>
+                        <div className="text-sm text-gray-400">
+                          {Object.entries(userSettings?.plugboard || {}).length > 0
+                            ? Object.entries(userSettings.plugboard).map(([a, b]) => `${a}-${b}`).join(', ')
+                            : 'No plugboard connections'}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <button
+                      className="text-yellow-400 hover:text-yellow-300 mt-2"
+                      onClick={() => setShowSettings(true)}
+                    >
+                      Configure Enigma Settings
+                    </button>
+                  )}
                   <br/>
                   Decrypt the message with the simulator and enter the result below!
                 </div>
               )}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-400 mb-2">
-                  Entschlüssle das Secret dieser Section:
+                  Decrypt the secret:
                 </label>
                 <input
                   type="text"
                   value={userInput}
                   onChange={e => setUserInput(e.target.value)}
                   className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Dein Ergebnis hier..."
+                  placeholder="Enter your solution..."
                   disabled={solved}
                 />
                 {error && <div className="text-red-400 mt-2">{error}</div>}
@@ -119,16 +216,16 @@ export const SectionModal: React.FC<SectionModalProps> = ({
                 onClick={() => setShowSimulator(true)}
                 disabled={showSimulator}
               >
-                Enigma-Simulator öffnen
+                Open Enigma Simulator
               </button>
               {solved ? (
-                <div className="text-green-400 font-semibold mb-4">Richtig! Du hast das Secret gelöst 🎉</div>
+                <div className="text-green-400 font-semibold mb-4">Correct! You've solved the secret 🎉</div>
               ) : (
                 <button
-                  className="bg-yellow-400 text-gray-900 px-4 py-2 rounded font-bold hover:bg-yellow-300 transition"
+                  className="bg-yellow-400 text-gray-900 px-4 py-2 rounded font-bold hover:yellow-300 transition"
                   onClick={handleCheck}
                 >
-                  Prüfen
+                  Check
                 </button>
               )}
               {solved && (
@@ -136,7 +233,7 @@ export const SectionModal: React.FC<SectionModalProps> = ({
                   className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-400 transition"
                   onClick={handleClose}
                 >
-                  Weiter
+                  Continue
                 </button>
               )}
             </motion.div>
@@ -151,11 +248,11 @@ export const SectionModal: React.FC<SectionModalProps> = ({
                 <button
                   className="absolute top-2 right-2 text-gray-400 hover:text-white"
                   onClick={() => setShowSimulator(false)}
-                  aria-label="Schließen"
+                  aria-label="Close"
                 >
                   ×
                 </button>
-                <EnigmaSimulator />
+                <EnigmaSimulator initialSettings={userSettings} />
               </motion.div>
             )}
           </div>
