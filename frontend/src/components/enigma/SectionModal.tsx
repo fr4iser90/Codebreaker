@@ -62,6 +62,14 @@ export const SectionModal: React.FC<SectionModalProps> = ({
     }
   }, [challenge]);
 
+  // State-Reset bei Wechsel der Challenge oder Öffnen/Schließen
+  useEffect(() => {
+    setUserInput('');
+    setSolved(false);
+    setError(null);
+    setShowSimulator(false);
+  }, [challengeId, isOpen]);
+
   const handleCheck = () => {
     if (!challenge) return;
     if (userInput.trim().toUpperCase() === (challenge.solution || 'HELLO')) {
